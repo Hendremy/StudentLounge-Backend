@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using StudentLounge_Backend.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,8 +13,11 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<StudentLoungeDbContext>(options =>
 {
-    //options.UseM(builder.Configuration.GetConnectionString("default"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("default"));
 });
+
+builder.Services.AddIdentity<StudentLoungeUser, IdentityRole>()
+    .AddEntityFrameworkStores<StudentLoungeDbContext>();
 
 var app = builder.Build();
 

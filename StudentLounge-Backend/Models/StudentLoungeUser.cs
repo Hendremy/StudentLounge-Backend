@@ -4,5 +4,8 @@ namespace StudentLounge_Backend.Models
 {
     public class StudentLoungeUser : IdentityUser
     {
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+
     }
 }
