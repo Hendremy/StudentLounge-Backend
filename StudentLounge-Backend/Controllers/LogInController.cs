@@ -5,7 +5,7 @@ namespace StudentLounge_Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SignInController : ControllerBase
+    public class LogInController : ControllerBase
     {
     }
 }
