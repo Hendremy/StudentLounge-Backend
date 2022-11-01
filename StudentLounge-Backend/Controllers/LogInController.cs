@@ -21,7 +21,9 @@ namespace StudentLounge_Backend.Controllers
             _jwtTokenCreator = jwtTokenCreator;
         }
 
-        [HttpPost("Login")]
+        [HttpPost("LogIn")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] UserLogin userLogin)
         {
@@ -34,7 +36,7 @@ namespace StudentLounge_Backend.Controllers
                     return Ok(_jwtTokenCreator.Create(user));
                 }
             }
-            return BadRequest("Login failed");
+            return NotFound("Login failed");
         }
 
         private async Task<StudentLoungeUser> FindUserAsync(string username)

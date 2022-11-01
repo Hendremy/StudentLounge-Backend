@@ -6,7 +6,6 @@ using StudentLounge_Backend.Models;
 
 namespace StudentLounge_Backend.Controllers
 {
-    //!!! Attention, avec Identity normal, serveur ne devient plus stateless, utiliser JWT
     [Route("[controller]")]
     [ApiController]
     public class RegisterController : ControllerBase
@@ -21,7 +20,10 @@ namespace StudentLounge_Backend.Controllers
         }
 
         [HttpPost("Register")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [AllowAnonymous]
+        //TODO: ModelState validation pour renvoyer ValidationProblem
         public async Task<IActionResult> Register([FromBody] UserRegister userRegister)
         {
             var existingUser = await FindUserByEmailAsync(userRegister.Email);
