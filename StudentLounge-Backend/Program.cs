@@ -6,6 +6,7 @@ using StudentLounge_Backend.Models;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+var config = builder.Configuration;
 
 // Add services to the container.
 
@@ -16,15 +17,15 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<StudentLoungeDbContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("default"));
+    options.UseSqlServer(config.GetConnectionString("default"));
 });
 
 builder.Services.AddIdentity<StudentLoungeUser, IdentityRole>()
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<StudentLoungeDbContext>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options => {
-        var config = builder.Configuration;
         options.TokenValidationParameters = new TokenValidationParameters()
         {
             ValidateIssuer = true,
@@ -39,7 +40,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddMvc();
 builder.Services.AddControllers();
-builder.Services.AddScoped<IJwtTokenCreator, JwtTokenCreator>(creator => new JwtTokenCreator(builder.Configuration.GetSection("JWT:Key").Value));
+builder.Services.AddScoped<ICreateToken, JwtTokenCreator>(creator => 
+    new JwtTokenCreator(config["JWT:Key"],config["JWT:Issuer"],config["JWT:Audience"]));
 
 var app = builder.Build();
 

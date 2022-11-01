@@ -1,24 +1,38 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace StudentLounge_Backend.Models
 {
-    public class JwtTokenCreator : IJwtTokenCreator
+    public class JwtTokenCreator : ICreateToken
     {
         private readonly SymmetricSecurityKey _key;
-        public JwtTokenCreator(string key)
+        private readonly string _issuer;
+        private readonly string _audience;
+
+
+        public JwtTokenCreator(string key, string issuer, string audience)
         {
             _key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(key));
+            _issuer = issuer;
+            _audience = audience;
         }
 
-        public string CreateToken(StudentLoungeUser user)
+        public string Create(StudentLoungeUser user)
         {
-            var cred = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);
+            var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.UserName),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.GivenName, user.FullName),
+                new Claim(ClaimTypes.Role, "User")
+            };
 
-            var token = new JwtSecurityToken();
+            var token = new JwtSecurityToken(_issuer, _audience, claims,
+                expires: DateTime.Now.AddDays(1), signingCredentials: creds);
 
-            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
-            return jwt;
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 

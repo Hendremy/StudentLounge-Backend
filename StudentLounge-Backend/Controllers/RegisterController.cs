@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using StudentLounge_Backend.Models;
@@ -10,54 +11,51 @@ namespace StudentLounge_Backend.Controllers
     [ApiController]
     public class RegisterController : ControllerBase
     {
-        private readonly IConfiguration _config;
         private readonly UserManager<StudentLoungeUser> _userManager;
-        private readonly IJwtTokenCreator _jwtTokenCreator;
+        private readonly ICreateToken _jwtTokenCreator;
 
-        public RegisterController(IConfiguration config, [FromServices]UserManager<StudentLoungeUser> userManager, IJwtTokenCreator jwtTokenCreator)
+        public RegisterController([FromServices]UserManager<StudentLoungeUser> userManager, ICreateToken jwtTokenCreator)
         {
             _userManager = userManager;
-            _config = config;
             _jwtTokenCreator = jwtTokenCreator;
         }
 
-        [HttpPost("PostUser")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> SignUp(UserInfo userInfo)
+        [HttpPost("Register")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Register([FromBody] UserRegister userRegister)
         {
-            var exists = await GetUserByEmailAsync(userInfo.Email);
-            if (userInfo.Pass == userInfo.PassRep && exists != null) {
-                var result = await CreateUserAsync(userInfo);
+            var existingUser = await FindUserByEmailAsync(userRegister.Email);
+            if (userRegister.PassHash == userRegister.PassRepHash && existingUser == null) {
+                var result = await CreateUserAsync(userRegister);
                 if (result.Succeeded)
                 {
-                    var account = await GetUserByEmailAsync(userInfo.Email);
-                    return Ok(_jwtTokenCreator.CreateToken(account));
+                    var account = await FindUserByEmailAsync(userRegister.Email);
+                    return Ok(_jwtTokenCreator.Create(account));
                 }
-                else
-                {
-                    return Problem();
+                else {
+                    return BadRequest(result.Errors);
                 }
             }
             return BadRequest();
         }
 
 
-        private async Task<IdentityResult> CreateUserAsync(UserInfo userInfo)
+        private async Task<IdentityResult> CreateUserAsync(UserRegister userInfo)
         {
             var user = new StudentLoungeUser()
             {
                 Email = userInfo.Email,
                 UserName = userInfo.Email,
                 LastName = userInfo.Lastname,
-                FirstName = userInfo.Firstname
+                FirstName = userInfo.Firstname,
+                //PasswordHash = userInfo.PassHash
             };
-            return await _userManager.CreateAsync(user, userInfo.Pass);
+            return await _userManager.CreateAsync(user, userInfo.PassHash);
         }
 
-        private async Task<StudentLoungeUser> GetUserByEmailAsync(string email)
+        private async Task<StudentLoungeUser> FindUserByEmailAsync(string email)
         {
-            return await _userManager.FindByEmailAsync(email); ;
+            return await _userManager.FindByEmailAsync(email);
         }
     }
 
