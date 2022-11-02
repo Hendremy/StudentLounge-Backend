@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using StudentLounge_Backend.Models;
+using StudentLounge_Backend.Models.Seed;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -54,6 +55,15 @@ builder.Services.AddScoped<ICreateToken, JwtTokenCreator>(creator =>
     new JwtTokenCreator(config["JWT:Key"],config["JWT:Issuer"],config["JWT:Audience"]));
 
 var app = builder.Build();
+
+//Seeding standard roles and admin account
+using (var scope = app.Services.CreateScope())
+{
+    var usermanager = scope.ServiceProvider.GetRequiredService<UserManager<StudentLoungeUser>>();
+    var rolemanager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    UserSeed.AddDefaultRoles(rolemanager);
+    UserSeed.AddDefaultUser(usermanager);
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

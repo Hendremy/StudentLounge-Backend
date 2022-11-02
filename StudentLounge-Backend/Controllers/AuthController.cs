@@ -9,18 +9,20 @@ namespace StudentLounge_Backend.Controllers
     [Route("[controller]")]
     [AllowAnonymous]
     [ApiController]
-    public class RegisterController : ControllerBase
+    public class AuthController : ControllerBase
     {
         private readonly UserManager<StudentLoungeUser> _userManager;
+        private readonly SignInManager<StudentLoungeUser> _signInManager;
         private readonly ICreateToken _jwtTokenCreator;
 
-        public RegisterController([FromServices]UserManager<StudentLoungeUser> userManager, ICreateToken jwtTokenCreator)
+        public AuthController([FromServices]UserManager<StudentLoungeUser> userManager, SignInManager<StudentLoungeUser> signInManager, ICreateToken jwtTokenCreator)
         {
             _userManager = userManager;
+            _signInManager = signInManager;
             _jwtTokenCreator = jwtTokenCreator;
         }
 
-        [HttpPost]
+        [HttpPost("Register")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         //TODO: ModelState validation pour renvoyer ValidationProblem
@@ -41,15 +43,22 @@ namespace StudentLounge_Backend.Controllers
             return BadRequest();
         }
 
-        [HttpPost("Google")]
+        [HttpPost("Login")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Google()
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> Login([FromBody] UserLogin userLogin)
         {
-            //TODO: Inscription google
-            return BadRequest();
+            var user = await _userManager.FindByNameAsync(userLogin.Username);
+            if (user != null)
+            {
+                var loginResult = await _signInManager.CheckPasswordSignInAsync(user, userLogin.Password, false);
+                if (loginResult.Succeeded)
+                {
+                    return Ok(_jwtTokenCreator.Create(user));
+                }
+            }
+            return NotFound("Login failed");
         }
-
 
         private async Task<IdentityResult> CreateUserAsync(UserRegister userInfo)
         {
