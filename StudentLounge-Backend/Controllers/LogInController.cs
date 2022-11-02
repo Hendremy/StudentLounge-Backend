@@ -27,7 +27,7 @@ namespace StudentLounge_Backend.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Login([FromBody] UserLogin userLogin)
         {
-            var user = await FindUserAsync(userLogin.Username);
+            var user = await _userManager.FindByNameAsync(userLogin.Username);
             if (user != null)
             {
                 var loginResult = await _signInManager.CheckPasswordSignInAsync(user, userLogin.Password, false);
@@ -42,14 +42,14 @@ namespace StudentLounge_Backend.Controllers
         [HttpPost("Google")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Google()
+        public async Task<IActionResult> Google(string provider, string providerKey)
         {
-            return Ok();
-        }
-
-        private async Task<StudentLoungeUser> FindUserAsync(string username)
-        {
-            return await _userManager.FindByNameAsync(username);
+            var user = await _userManager.FindByLoginAsync(provider, providerKey);
+            if (user != null) 
+            {
+                return Ok(_jwtTokenCreator.Create(user));
+            }
+            return NotFound("Login failed");
         }
     }
 }

@@ -41,6 +41,15 @@ namespace StudentLounge_Backend.Controllers
             return BadRequest();
         }
 
+        [HttpPost("Google")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Google()
+        {
+            //TODO: Inscription google
+            return BadRequest();
+        }
+
 
         private async Task<IdentityResult> CreateUserAsync(UserRegister userInfo)
         {
