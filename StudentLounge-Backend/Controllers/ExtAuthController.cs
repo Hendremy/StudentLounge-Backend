@@ -38,7 +38,7 @@ namespace StudentLounge_Backend.Controllers
                 {
                     user = new StudentLoungeUser()
                     {
-
+                        //TODO: Créer l'utilisateur sur base de son compte externe
                     };
                 }
             }
