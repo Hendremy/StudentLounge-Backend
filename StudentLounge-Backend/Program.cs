@@ -36,7 +36,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidAudience = config["Jwt:Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]))
         };
-    });
+    })
+    .AddGoogle();
 
 builder.Services.AddMvc();
 builder.Services.AddControllers();
