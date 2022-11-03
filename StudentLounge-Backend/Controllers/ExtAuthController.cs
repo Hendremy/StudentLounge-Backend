@@ -30,19 +30,21 @@ namespace StudentLounge_Backend.Controllers
             var loginSupported = await ProviderSupportedAsync(provider);
             if (loginSupported) {
                 var user = await _userManager.FindByLoginAsync(provider, providerKey);
-                if (user != null)
+                if (user == null)
                 {
-                    return Ok(_jwtTokenCreator.Create(user));
+                    user = CreateExternalUser(provider, providerKey);
+                    var loginInfo = new UserLoginInfo(provider, providerKey, provider);
+                    await _userManager.AddLoginAsync(user, loginInfo);
                 }
-                else 
-                {
-                    user = new StudentLoungeUser()
-                    {
-                        //TODO: Créer l'utilisateur sur base de son compte externe
-                    };
-                }
+                return Ok(_jwtTokenCreator.Create(user));
             }
             return BadRequest("Login provider not supported");
+        }
+
+        private StudentLoungeUser CreateExternalUser(string provider, string providerKey)
+        {
+            //TODO: Récupérer l'objet des services pour création d'user externe
+            return null;
         }
 
         private async Task<bool> ProviderSupportedAsync(string providerName)

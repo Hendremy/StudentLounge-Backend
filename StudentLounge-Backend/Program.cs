@@ -38,12 +38,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]))
         };
     })
-    .AddGoogle(options => {
+    .AddGoogle("Google",options => {
         var googleCreds = config.GetSection("Authentication:Google");
         options.ClientId = googleCreds["ClientId"];
         options.ClientSecret = googleCreds["ClientSecret"];
     })
-    .AddFacebook(options => {
+    .AddFacebook("Facebook",options => {
         var facebookCreds = config.GetSection("Authentication:Facebook");
         options.AppId = facebookCreds["AppId"];
         options.AppSecret = facebookCreds["AppSecret"];
