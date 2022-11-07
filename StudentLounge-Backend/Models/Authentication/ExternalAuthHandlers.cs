@@ -1,8 +1,17 @@
 ﻿using Google.Apis.Auth;
 using Microsoft.AspNetCore.Identity;
 
-namespace StudentLounge_Backend.Models
+namespace StudentLounge_Backend.Models.Authentication
 {
+    public class ExternalAuthHandlers : BaseExtAuthHandler
+    {
+        public ExternalAuthHandlers(IHandleUsers userRepo)
+        {
+            var googleHandler = new GoogleAuthHandler(userRepo);
+            this.Next = googleHandler;
+        }
+    }
+
     public class GoogleAuthHandler : BaseExtAuthHandler
     {
         private const string _providerName = "Google";
@@ -15,7 +24,7 @@ namespace StudentLounge_Backend.Models
             _userRepository = userRepository;
         }
 
-        public async Task<AppUser> HandleAsync(ExtAuthRequest request)
+        public async Task<AppUser> HandleAsync(ExternalAuthRequest request)
         {
             if (CanHandleRequest(request))
             {
@@ -27,17 +36,17 @@ namespace StudentLounge_Backend.Models
             }
         }
 
-        private async Task<AppUser> AuthenticateUserAsync(ExtAuthRequest request)
+        private async Task<AppUser> AuthenticateUserAsync(ExternalAuthRequest request)
         {
             try 
             {
                 GoogleJsonWebSignature.Payload payload = await GoogleJsonWebSignature.ValidateAsync(request.Token);
-                var userId = payload.Subject;
+                string userId = payload.Subject;
                 var user = await _userRepository.FindExternalUserAsync(request.ProviderName, userId);
                 if(user == null)
                 {
-                    user = CreateUser(payload);
-                    user = await _userRepository.CreateExternalUserAsync(request.ProviderName, userId, user);
+                    var newUser = CreateUser(payload);
+                    var createResult = await _userRepository.CreateExternalUserAsync(request.ProviderName, userId, newUser);
                 }
                 return user;
             }

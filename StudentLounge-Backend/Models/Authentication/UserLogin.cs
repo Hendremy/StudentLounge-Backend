@@ -1,4 +1,4 @@
-﻿namespace StudentLounge_Backend.Models
+﻿namespace StudentLounge_Backend.Models.Authentication
 {
     public class UserLogin
     {

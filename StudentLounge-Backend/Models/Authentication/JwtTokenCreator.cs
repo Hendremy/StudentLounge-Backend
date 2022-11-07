@@ -2,7 +2,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
-namespace StudentLounge_Backend.Models
+namespace StudentLounge_Backend.Models.Authentication
 {
     public class JwtTokenCreator : ICreateToken
     {

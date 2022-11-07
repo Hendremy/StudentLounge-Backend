@@ -1,17 +1,17 @@
-﻿namespace StudentLounge_Backend.Models
+﻿namespace StudentLounge_Backend.Models.Authentication
 {
-    public interface IHandleExtAuth
+    public interface IHandleExternalAuth
     {
-        IHandleExtAuth Next { get;  set; }
-        Task<AppUser> HandleAsync(ExtAuthRequest request);
+        IHandleExternalAuth Next { get;  set; }
+        Task<AppUser> HandleAsync(ExternalAuthRequest request);
     }
 
-    public abstract class BaseExtAuthHandler : IHandleExtAuth
+    public abstract class BaseExtAuthHandler : IHandleExternalAuth
     {
         protected string ProviderName { get; init; }
-        public IHandleExtAuth Next { get; set; }
+        public IHandleExternalAuth Next { get; set; }
 
-        public async Task<AppUser> HandleAsync(ExtAuthRequest request)
+        public async Task<AppUser> HandleAsync(ExternalAuthRequest request)
         {
             AppUser? user = null;
             if (Next != null)
@@ -21,13 +21,13 @@
             return user;
         }
 
-        protected bool CanHandleRequest(ExtAuthRequest request)
+        protected bool CanHandleRequest(ExternalAuthRequest request)
         {
             return request.IsValid && request.MatchesProvider(ProviderName);
         }
     }
 
-    public class ExtAuthRequest
+    public class ExternalAuthRequest
     {
         public string ProviderName { get; set; }
         public string Token { get; set; }

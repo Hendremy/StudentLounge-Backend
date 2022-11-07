@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.Transactions;
 
-namespace StudentLounge_Backend.Models
+namespace StudentLounge_Backend.Models.Authentication
 {
     public class UserRepository : IHandleUsers
     {
@@ -13,13 +13,38 @@ namespace StudentLounge_Backend.Models
             _userManager = userManager;
         }
 
-        public Task<AppUser> CreateUserAsync()
+        //TODO: Check si ID est ajouté directement à l'objet AppUser
+        public async Task<IdentityResult> CreateUserAsync(AppUser user, string password)
         {
-            throw new NotImplementedException();
+            var createResult = await _userManager.CreateAsync(user, password);
+            if (createResult.Succeeded)
+            {
+                return await _userManager.AddToRoleAsync(user, "Student");
+            }
+            return createResult;
         }
 
+        public async Task<bool> UserExistsAsync(string username)
+        {
+            var user = await _userManager.FindByNameAsync(username);
+            return user != null;
+        }
 
-        public async Task<AppUser> CreateExternalUserAsync(string providerName, string userId, AppUser user)
+        public async Task<AppUser> LoginUserAsync(string username, string password)
+        {
+            var user = await _userManager.FindByNameAsync(username);
+            if(user != null)
+            {
+                var loginResult = await _userManager.CheckPasswordAsync(user, password);
+                if (loginResult)
+                {
+                    return user;
+                }
+            }
+            return null;
+        }
+
+        public async Task<IdentityResult> CreateExternalUserAsync(string providerName, string userId, AppUser user)
         {
             using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled)) 
             {
@@ -29,12 +54,12 @@ namespace StudentLounge_Backend.Models
                 if(createResult.Succeeded && assignRole.Succeeded && addLogin.Succeeded)
                 {
                     scope.Complete();
-                    return user;
+                    return IdentityResult.Success;
                 }
                 else
                 {
                     scope.Dispose();
-                    return null;
+                    return IdentityResult.Failed();
                 }
             }
         }

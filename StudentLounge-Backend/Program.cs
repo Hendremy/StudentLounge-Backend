@@ -2,8 +2,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using StudentLounge_Backend.Models.Authentication;
+using StudentLounge_Backend.Models.Authentication.Seed;
 using StudentLounge_Backend.Models;
-using StudentLounge_Backend.Models.Seed;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -39,10 +40,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-builder.Services.AddMvc();
-builder.Services.AddControllers();
 builder.Services.AddScoped<ICreateToken, JwtTokenCreator>(creator => 
     new JwtTokenCreator(config["JWT:Key"],config["JWT:Issuer"],config["JWT:Audience"]));
+
+builder.Services.AddScoped<IHandleUsers, UserRepository>();
+builder.Services.AddScoped<IHandleExternalAuth, ExternalAuthHandlers>();
 
 var app = builder.Build();
 

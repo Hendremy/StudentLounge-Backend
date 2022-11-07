@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace StudentLounge_Backend.Models.Seed
+namespace StudentLounge_Backend.Models.Authentication.Seed
 {
     public class UserSeed
     {

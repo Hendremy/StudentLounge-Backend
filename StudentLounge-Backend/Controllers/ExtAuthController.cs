@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using StudentLounge_Backend.Models;
+using StudentLounge_Backend.Models.Authentication;
 
 namespace StudentLounge_Backend.Controllers
 {
@@ -12,37 +13,21 @@ namespace StudentLounge_Backend.Controllers
     [ApiController]
     public class ExtAuthController : ControllerBase
     {
-        private readonly UserManager<AppUser> _userManager;
-        private readonly SignInManager<AppUser> _signInManager;
+        private readonly IHandleExternalAuth _externalAuthHandler;
         private readonly ICreateToken _jwtTokenCreator;
 
-        public ExtAuthController([FromServices]UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ICreateToken jwtTokenCreator)
+        public ExtAuthController([FromServices]IHandleExternalAuth externalAuthHandler, ICreateToken jwtTokenCreator)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
+            _externalAuthHandler = externalAuthHandler;
             _jwtTokenCreator = jwtTokenCreator;
         }
 
         [HttpPost("{providerName:string}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Google(string providerName, string jwt)
+        public async Task<IActionResult> Authenticate(string providerName, string jwt)
         {
-            try {
-                var payload = await GoogleJsonWebSignature.ValidateAsync(jwt);
-                var userId = payload.Subject;
 
-                var user = await _userManager.FindByLoginAsync("Google", userId);
-                if (user == null)
-                {
-
-                }
-                var token = _jwtTokenCreator.Create(user);
-                return Ok(token);
-            }catch(InvalidJwtException ex)
-            {
-                return Unauthorized();
-            }
         }
     }
 }
