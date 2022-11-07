@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Google.Apis.Auth;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -45,6 +46,22 @@ namespace StudentLounge_Backend.Controllers
         {
             //TODO: Récupérer l'objet des services pour création d'user externe
             return null;
+        }
+
+        [HttpPost("Google")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> Google(string jwt)
+        {
+            try {
+                var payload = await GoogleJsonWebSignature.ValidateAsync(jwt);
+                var userId = payload.Subject;
+
+                return Ok();
+            }catch(InvalidJwtException ex)
+            {
+                return Unauthorized();
+            }
         }
 
         private async Task<bool> ProviderSupportedAsync(string providerName)
