@@ -18,7 +18,7 @@ namespace StudentLounge_Backend.Models
             _audience = audience;
         }
 
-        public string Create(StudentLoungeUser user)
+        public string Create(AppUser user)
         {
             var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);
             var claims = new[]

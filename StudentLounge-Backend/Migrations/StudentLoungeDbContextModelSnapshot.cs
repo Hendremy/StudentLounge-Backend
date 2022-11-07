@@ -10,7 +10,7 @@ using StudentLounge_Backend.Models;
 
 namespace StudentLounge_Backend.Migrations
 {
-    [DbContext(typeof(StudentLoungeDbContext))]
+    [DbContext(typeof(AppDbContext))]
     partial class StudentLoungeDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

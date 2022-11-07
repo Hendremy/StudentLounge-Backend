@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace StudentLounge_Backend.Models
 {
-    public class StudentLoungeDbContext : IdentityDbContext<StudentLoungeUser>
+    public class AppDbContext : IdentityDbContext<AppUser>
     {
-        public StudentLoungeDbContext(DbContextOptions<StudentLoungeDbContext> options) : base(options)
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
         }
 
@@ -13,9 +13,5 @@ namespace StudentLounge_Backend.Models
         {
             base.OnModelCreating(modelBuilder);
         }
-
-        //public DbSet<StudentLoungeUser> Users { get; set; }
-        //public DbSet<OAuthAccount> OAuthAccounts { get; set; }
-
     }
 }

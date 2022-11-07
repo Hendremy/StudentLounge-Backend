@@ -11,11 +11,11 @@ namespace StudentLounge_Backend.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly UserManager<StudentLoungeUser> _userManager;
-        private readonly SignInManager<StudentLoungeUser> _signInManager;
+        private readonly UserManager<AppUser> _userManager;
+        private readonly SignInManager<AppUser> _signInManager;
         private readonly ICreateToken _jwtTokenCreator;
 
-        public AuthController([FromServices]UserManager<StudentLoungeUser> userManager, SignInManager<StudentLoungeUser> signInManager, ICreateToken jwtTokenCreator)
+        public AuthController([FromServices]UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ICreateToken jwtTokenCreator)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -62,7 +62,7 @@ namespace StudentLounge_Backend.Controllers
 
         private async Task<IdentityResult> CreateUserAsync(UserRegister userInfo)
         {
-            var user = new StudentLoungeUser()
+            var user = new AppUser()
             {
                 Email = userInfo.Email,
                 UserName = userInfo.Email,
@@ -72,7 +72,7 @@ namespace StudentLounge_Backend.Controllers
             return await _userManager.CreateAsync(user, userInfo.Password);
         }
 
-        private async Task<StudentLoungeUser> FindUserByEmailAsync(string email)
+        private async Task<AppUser> FindUserByEmailAsync(string email)
         {
             return await _userManager.FindByEmailAsync(email);
         }

@@ -2,6 +2,6 @@
 {
     public interface ICreateToken
     {
-        public string Create(StudentLoungeUser user);
+        public string Create(AppUser user);
     }
 }

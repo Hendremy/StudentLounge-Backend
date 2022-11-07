@@ -14,12 +14,12 @@ namespace StudentLounge_Backend.Models.Seed
             }
         }
 
-        public static void AddDefaultUser(UserManager<StudentLoungeUser> userManager)
+        public static void AddDefaultUser(UserManager<AppUser> userManager)
         {
-            StudentLoungeUser user = userManager.FindByIdAsync("1").Result;
+            AppUser user = userManager.FindByIdAsync("1").Result;
             if (user == null)
             {
-                var admin = new StudentLoungeUser()
+                var admin = new AppUser()
                 {
                     Email = "admin@studentlounge.com",
                     UserName = "admin@studentlounge.com",

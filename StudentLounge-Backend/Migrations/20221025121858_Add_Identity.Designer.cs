@@ -11,7 +11,7 @@ using StudentLounge_Backend.Models;
 
 namespace StudentLounge_Backend.Migrations
 {
-    [DbContext(typeof(StudentLoungeDbContext))]
+    [DbContext(typeof(AppDbContext))]
     [Migration("20221025121858_Add_Identity")]
     partial class Add_Identity
     {

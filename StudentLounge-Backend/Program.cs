@@ -16,14 +16,14 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<StudentLoungeDbContext>(options =>
+builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseSqlServer(config.GetConnectionString("default"));
 });
 
-builder.Services.AddIdentity<StudentLoungeUser, IdentityRole>()
+builder.Services.AddIdentity<AppUser, IdentityRole>()
     .AddRoles<IdentityRole>()
-    .AddEntityFrameworkStores<StudentLoungeDbContext>();
+    .AddEntityFrameworkStores<AppDbContext>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options => {
@@ -33,9 +33,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = config["Jwt:Issuer"],
-            ValidAudience = config["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]))
+            ValidIssuer = config["JWT:Issuer"],
+            ValidAudience = config["JWT:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JWT:Key"]))
         };
     });
 
@@ -49,7 +49,7 @@ var app = builder.Build();
 //Seeding standard roles and admin account
 using (var scope = app.Services.CreateScope())
 {
-    var usermanager = scope.ServiceProvider.GetRequiredService<UserManager<StudentLoungeUser>>();
+    var usermanager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
     var rolemanager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
     UserSeed.AddDefaultRoles(rolemanager);
     UserSeed.AddDefaultUser(usermanager);

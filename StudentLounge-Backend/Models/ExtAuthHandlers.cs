@@ -1,23 +1,25 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Google.Apis.Auth;
+using Microsoft.AspNetCore.Identity;
 
 namespace StudentLounge_Backend.Models
 {
     public class GoogleAuthHandler : BaseExtAuthHandler
     {
-        //TODO: refactoriser dans classe abstraite
         private const string _providerName = "Google";
 
-        private readonly UserManager<StudentLoungeUser> _userManager;
+        private readonly IHandleUsers _userRepository;
 
-        public GoogleAuthHandler(UserManager<StudentLoungeUser> userManager)
+        public GoogleAuthHandler(IHandleUsers userRepository)
         {
-            _userManager = userManager;
+            ProviderName = _providerName;
+            _userRepository = userRepository;
         }
 
-        public async Task<StudentLoungeUser> HandleAsync(ExtAuthRequest request)  {
+        public async Task<AppUser> HandleAsync(ExtAuthRequest request)
+        {
             if (CanHandleRequest(request))
             {
-                return await CreateGoogleUserAsync(request);
+                return await AuthenticateUserAsync(request);
             }
             else
             {
@@ -25,16 +27,36 @@ namespace StudentLounge_Backend.Models
             }
         }
 
-        private async Task<StudentLoungeUser> CreateGoogleUserAsync(ExtAuthRequest request)
+        private async Task<AppUser> AuthenticateUserAsync(ExtAuthRequest request)
         {
-            return null;
+            try 
+            {
+                GoogleJsonWebSignature.Payload payload = await GoogleJsonWebSignature.ValidateAsync(request.Token);
+                var userId = payload.Subject;
+                var user = await _userRepository.FindExternalUserAsync(request.ProviderName, userId);
+                if(user == null)
+                {
+                    user = CreateUser(payload);
+                    user = await _userRepository.CreateExternalUserAsync(request.ProviderName, userId, user);
+                }
+                return user;
+            }
+            catch (InvalidJwtException ex)
+            {
+                return null;
+            }
         }
 
-        private bool CanHandleRequest(ExtAuthRequest request)
+        private AppUser CreateUser(GoogleJsonWebSignature.Payload payload)
         {
-            return request.MatchesProvider(_providerName) && request.TokenIsValid;
+            return new AppUser()
+            {
+                FirstName = payload.GivenName,
+                LastName = payload.FamilyName,
+                Email = payload.Email,
+                Image = payload.Picture
+            };
         }
+        
     }
-
-
 }

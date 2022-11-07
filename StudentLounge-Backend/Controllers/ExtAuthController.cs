@@ -12,11 +12,11 @@ namespace StudentLounge_Backend.Controllers
     [ApiController]
     public class ExtAuthController : ControllerBase
     {
-        private readonly UserManager<StudentLoungeUser> _userManager;
-        private readonly SignInManager<StudentLoungeUser> _signInManager;
+        private readonly UserManager<AppUser> _userManager;
+        private readonly SignInManager<AppUser> _signInManager;
         private readonly ICreateToken _jwtTokenCreator;
 
-        public ExtAuthController([FromServices]UserManager<StudentLoungeUser> userManager, SignInManager<StudentLoungeUser> signInManager, ICreateToken jwtTokenCreator)
+        public ExtAuthController([FromServices]UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ICreateToken jwtTokenCreator)
         {
             _userManager = userManager;
             _signInManager = signInManager;

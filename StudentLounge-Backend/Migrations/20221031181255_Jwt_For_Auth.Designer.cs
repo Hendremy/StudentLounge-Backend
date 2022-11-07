@@ -11,7 +11,7 @@ using StudentLounge_Backend.Models;
 
 namespace StudentLounge_Backend.Migrations
 {
-    [DbContext(typeof(StudentLoungeDbContext))]
+    [DbContext(typeof(AppDbContext))]
     [Migration("20221031181255_Jwt_For_Auth")]
     partial class Jwt_For_Auth
     {
