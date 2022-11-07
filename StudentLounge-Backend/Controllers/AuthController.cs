@@ -67,8 +67,7 @@ namespace StudentLounge_Backend.Controllers
                 Email = userInfo.Email,
                 UserName = userInfo.Email,
                 LastName = userInfo.Lastname,
-                FirstName = userInfo.Firstname,
-                //PasswordHash = userInfo.PassHash
+                FirstName = userInfo.Firstname
             };
             return await _userManager.CreateAsync(user, userInfo.Password);
         }

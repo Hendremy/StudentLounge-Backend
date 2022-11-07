@@ -23,27 +23,26 @@ namespace StudentLounge_Backend.Controllers
             _jwtTokenCreator = jwtTokenCreator;
         }
 
-        [HttpPost("Google")]
+        [HttpPost("{providerName:string}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Google(string jwt)
+        public async Task<IActionResult> Google(string providerName, string jwt)
         {
             try {
                 var payload = await GoogleJsonWebSignature.ValidateAsync(jwt);
                 var userId = payload.Subject;
 
-                return Ok();
+                var user = await _userManager.FindByLoginAsync("Google", userId);
+                if (user == null)
+                {
+
+                }
+                var token = _jwtTokenCreator.Create(user);
+                return Ok(token);
             }catch(InvalidJwtException ex)
             {
                 return Unauthorized();
             }
-        }
-
-
-        [HttpPost("Apple")]
-        public async Task<IActionResult> Apple([FromBody] StudentLoungeUser user) 
-        {
-            return null;
         }
     }
 }
