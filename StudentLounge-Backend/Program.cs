@@ -37,16 +37,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidAudience = config["Jwt:Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]))
         };
-    })
-    .AddGoogle("Google",options => {
-        var googleCreds = config.GetSection("Authentication:Google");
-        options.ClientId = googleCreds["ClientId"];
-        options.ClientSecret = googleCreds["ClientSecret"];
-    })
-    .AddFacebook("Facebook",options => {
-        var facebookCreds = config.GetSection("Authentication:Facebook");
-        options.AppId = facebookCreds["AppId"];
-        options.AppSecret = facebookCreds["AppSecret"];
     });
 
 builder.Services.AddMvc();

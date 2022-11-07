@@ -14,10 +14,7 @@ namespace StudentLounge_Backend.Models
 
         public async Task<StudentLoungeUser> Create(string providerKey)
         {
-            UserCredential userCredential = await GoogleWebAuthorizationBroker.AuthorizeAsync(_secrets, new string[] { }, providerKey, CancellationToken.None);
-            //TODO: Récupérer les infos de l'utilisateur pour lui créer un compte
-            //providerKey = l'id user côté google, refaire une requête pour avoir nom prénom & créer le compte puis associer "Google","userid" dans UserLogins ??
-            throw new NotImplementedException();
+            return null;
         }
     }
 }
