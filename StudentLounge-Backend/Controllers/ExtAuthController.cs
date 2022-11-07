@@ -22,12 +22,13 @@ namespace StudentLounge_Backend.Controllers
             _jwtTokenCreator = jwtTokenCreator;
         }
 
-        [HttpPost("{providerName:string}")]
+        [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Authenticate(string providerName, string jwt)
+        public async Task<IActionResult> Authenticate([FromBody] ExternalAuthRequest request)
         {
-
+            var user = await _externalAuthHandler.HandleAsync(request);
+            return user != null ? Ok(_jwtTokenCreator.Create(user)) : BadRequest();
         }
     }
 }

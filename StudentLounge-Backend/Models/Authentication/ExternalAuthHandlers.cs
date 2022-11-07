@@ -12,7 +12,7 @@ namespace StudentLounge_Backend.Models.Authentication
         }
     }
 
-    public class GoogleAuthHandler : BaseExtAuthHandler
+    internal class GoogleAuthHandler : BaseExtAuthHandler
     {
         private const string _providerName = "Google";
 

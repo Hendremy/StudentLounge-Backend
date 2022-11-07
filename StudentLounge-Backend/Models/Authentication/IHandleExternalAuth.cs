@@ -13,7 +13,7 @@
 
         public async Task<AppUser> HandleAsync(ExternalAuthRequest request)
         {
-            AppUser? user = null;
+            AppUser user = null;
             if (Next != null)
             {
                 user = await Next.HandleAsync(request);
@@ -26,14 +26,4 @@
             return request.IsValid && request.MatchesProvider(ProviderName);
         }
     }
-
-    public class ExternalAuthRequest
-    {
-        public string ProviderName { get; set; }
-        public string Token { get; set; }
-
-        public bool MatchesProvider(string providerName) => providerName != null && ProviderName == providerName;
-        public bool IsValid => !string.IsNullOrEmpty(ProviderName) && !string.IsNullOrEmpty(Token);
-    }
-
 }

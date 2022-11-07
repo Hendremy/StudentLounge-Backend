@@ -44,6 +44,7 @@ builder.Services.AddScoped<ICreateToken, JwtTokenCreator>(creator =>
     new JwtTokenCreator(config["JWT:Key"],config["JWT:Issuer"],config["JWT:Audience"]));
 
 builder.Services.AddScoped<IHandleUsers, UserRepository>();
+builder.Services.AddScoped<IHandleAuth, AuthenticationHandler>();
 builder.Services.AddScoped<IHandleExternalAuth, ExternalAuthHandlers>();
 
 var app = builder.Build();
