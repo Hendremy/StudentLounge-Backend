@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StudentLounge_Backend.Models;
 
@@ -11,9 +12,10 @@ using StudentLounge_Backend.Models;
 namespace StudentLounge_Backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class StudentLoungeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221107235100_UserRename_And_Picture")]
+    partial class UserRename_And_Picture
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -179,6 +181,7 @@ namespace StudentLounge_Backend.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Image")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
