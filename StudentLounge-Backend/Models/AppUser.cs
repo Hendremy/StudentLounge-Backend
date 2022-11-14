@@ -11,5 +11,7 @@ namespace StudentLounge_Backend.Models
 
         public string FullName => $"{FirstName} {LastName}";
 
+        public List<Lesson> Lessons { get; set; } = new List<Lesson>();
+
     }
 }
