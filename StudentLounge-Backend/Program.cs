@@ -60,7 +60,6 @@ builder.Services.AddScoped<IHandleExternalAuth, ExternalAuthHandlers>(services =
     var userHandler = services.GetRequiredService<IHandleUsers>();
     return new ExternalAuthHandlers(userHandler);
 });
-builder.Services.AddSingleton<IFileProvider>(new PhysicalFileProvider(Directory.GetCurrentDirectory()));
 var app = builder.Build();
 
 //Seeding standard roles and admin account
