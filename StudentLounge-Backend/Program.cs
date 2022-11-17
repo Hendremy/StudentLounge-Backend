@@ -7,6 +7,8 @@ using StudentLounge_Backend.Models.Authentication.Seed;
 using StudentLounge_Backend.Models;
 using System.Text;
 using System.Text.Json.Serialization;
+using StudentLounge_Backend.Models.UploadFile;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
@@ -16,7 +18,10 @@ var config = builder.Configuration;
 builder.Services.AddControllers().AddJsonOptions(o => o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.OperationFilter<FileUploadFilter>();
+});
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
@@ -55,7 +60,7 @@ builder.Services.AddScoped<IHandleExternalAuth, ExternalAuthHandlers>(services =
     var userHandler = services.GetRequiredService<IHandleUsers>();
     return new ExternalAuthHandlers(userHandler);
 });
-
+builder.Services.AddSingleton<IFileProvider>(new PhysicalFileProvider(Directory.GetCurrentDirectory()));
 var app = builder.Build();
 
 //Seeding standard roles and admin account
