@@ -48,6 +48,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddScoped<ICreateToken, JwtTokenCreator>(creator => 
     new JwtTokenCreator(config["JWT:Key"],config["JWT:Issuer"],config["JWT:Audience"]));
+builder.Services.AddScoped<ICreateUserInfo, UserInfoCreator>();
 
 builder.Services.AddScoped<IHandleUsers, UserRepository>();
 builder.Services.AddScoped<IHandleAuth, AuthenticationHandler>(services =>
