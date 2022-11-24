@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -14,7 +15,9 @@ using StudentLounge_Backend.Models;
 namespace StudentLounge_Backend.Controllers
 {
     [Route("[controller]")]
-    [Authorize("Student")]
+    //[Authorize(Roles="Student")]
+    //TODO: Correctement autoriser les utilisateurs, vérifier l'ID dans le token pour voir si correspond à ID fournit en param
+    //var id = this.User.Claims.First(i => i.Type == ClaimTypes.NameIdentifier).Value;
     [ApiController]
     public class LessonsController : ControllerBase
     {
@@ -101,7 +104,7 @@ namespace StudentLounge_Backend.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Ok();
+            return Ok(lesson);
         }
 
         // DELETE: api/Lessons/5

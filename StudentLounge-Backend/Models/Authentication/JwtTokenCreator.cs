@@ -23,10 +23,10 @@ namespace StudentLounge_Backend.Models.Authentication
             var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);
             var claims = new[]
             {
-                new Claim(ClaimTypes.NameIdentifier, user.UserName),
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.GivenName, user.Fullname),
-                new Claim(ClaimTypes.Role, "User")
+                new Claim(ClaimTypes.Role, "Student")//TODO: Changer le role en fonction du role réel de l'user
             };
 
             var token = new JwtSecurityToken(_issuer, _audience, claims,
