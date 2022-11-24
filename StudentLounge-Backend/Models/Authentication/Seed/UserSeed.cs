@@ -23,8 +23,8 @@ namespace StudentLounge_Backend.Models.Authentication.Seed
                 {
                     Email = "admin@studentlounge.com",
                     UserName = "admin@studentlounge.com",
-                    FirstName = "Admin",
-                    LastName = "Admin"
+                    Firstname = "Admin",
+                    Lastname = "Admin"
                 };
 
                 var add = userManager.CreateAsync(admin, "Root123/").Result;

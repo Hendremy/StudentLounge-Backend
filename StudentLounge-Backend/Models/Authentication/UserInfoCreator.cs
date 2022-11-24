@@ -5,7 +5,7 @@
         public UserInfo Create(ICreateToken tokenCreator, AppUser user)
         {
             string token = tokenCreator.Create(user);
-            return new UserInfo(user.Id, token, user.FullName, user.Image);
+            return new UserInfo(user.Id, token, user.Fullname, user.Image);
         }
     }
 }

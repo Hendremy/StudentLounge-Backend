@@ -60,8 +60,8 @@ namespace StudentLounge_Backend.Models.Authentication
         {
             return new AppUser()
             {
-                FirstName = payload.GivenName,
-                LastName = payload.FamilyName,
+                Firstname = payload.GivenName,
+                Lastname = payload.FamilyName,
                 Email = payload.Email,
                 Image = payload.Picture
             };
