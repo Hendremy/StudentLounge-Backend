@@ -39,8 +39,8 @@ namespace StudentLounge_Backend.Models.Authentication
             {
                 Email = register.Email,
                 UserName = register.Email,
-                LastName = register.Lastname,
-                FirstName = register.Firstname
+                Lastname = register.Lastname,
+                Firstname = register.Firstname
             };
         }
     }
