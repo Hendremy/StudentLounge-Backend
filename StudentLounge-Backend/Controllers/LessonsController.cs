@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -13,6 +14,7 @@ using StudentLounge_Backend.Models;
 namespace StudentLounge_Backend.Controllers
 {
     [Route("[controller]")]
+    [Authorize("Student")]
     [ApiController]
     public class LessonsController : ControllerBase
     {
@@ -47,16 +49,15 @@ namespace StudentLounge_Backend.Controllers
         // PUT: api/Lessons/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{name}")]
-        public async Task<IActionResult> PutLesson(string name)
+        public async Task<IActionResult> CreateLesson(string name)
         {
-            if (name == null)
+            if (string.IsNullOrEmpty(name))
             {
                 return BadRequest();
             }
             var lesson = Activator.CreateInstance<Lesson>();
             lesson.Name = name;
             _context.Add(lesson);
-
 
             try
             {
@@ -66,7 +67,6 @@ namespace StudentLounge_Backend.Controllers
             {
                 return NotFound(name);
             }
-
             return NoContent();
         }
 
@@ -81,21 +81,20 @@ namespace StudentLounge_Backend.Controllers
             return CreatedAtAction("GetLesson", new { id = lesson.Id }, lesson);
         }
 
-        [HttpGet("LessonOfUser/{mail}")]
-        public async Task<ActionResult<List<Lesson>>> GetLessonsOfUser(String mail)
+        [HttpGet("user/{userId}")]
+        public async Task<ActionResult<List<Lesson>>> GetUserLessons(string userId)
         {
-            var users = _context.Users.Where(user => mail == user.Email).Include(u => u.Lessons);
+            var users = _context.Users.Where(user => userId == user.Id).Include(u => u.Lessons);
             var myUser = users.First();
             
             return Ok(myUser.Lessons);
         }
 
-        [HttpPut("LessonRegister/{mail}/{lessonId}")]
-        public async Task<ActionResult<Lesson>> LessonRegister(string mail, int lessonId)
+        [HttpPut("{lessonId}/user/{userId}")]
+        public async Task<ActionResult<Lesson>> JoinLesson(int lessonId, string userId)
         {
-
             var lesson = _context.Lessons.Where(lesson => lesson.Id == lessonId).Include(l => l.Users).First();
-            var user = _context.Users.Where(user => mail.Equals(user.Email)).Include(u => u.Lessons).First();
+            var user = _context.Users.Where(user => user.Id == userId).Include(u => u.Lessons).First();
 
             lesson.Users.Add(user);
             user.Lessons.Add(lesson);
@@ -106,10 +105,10 @@ namespace StudentLounge_Backend.Controllers
         }
 
         // DELETE: api/Lessons/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteLesson(int id)
+        [HttpDelete("{lessonId}")]
+        public async Task<IActionResult> DeleteLesson(int lessonId)
         {
-            var lesson = await _context.Lessons.FindAsync(id);
+            var lesson = await _context.Lessons.FindAsync(lessonId);
             if (lesson == null)
             {
                 return NotFound();

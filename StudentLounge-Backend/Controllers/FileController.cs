@@ -6,10 +6,12 @@ using System.Net;
 using static System.Net.Mime.MediaTypeNames;
 using System.Net.Sockets;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.AspNetCore.Authorization;
 
 namespace StudentLounge_Backend.Controllers
 {
     [Route("[controller]")]
+    [Authorize("Student")]
     [ApiController]
     public class FileController : ControllerBase
     {
