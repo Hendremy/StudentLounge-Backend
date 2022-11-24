@@ -68,7 +68,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: url,
                       policy =>
                       {
-                          policy.WithOrigins("https://porthos-intra.cg.helmo.be");
+                          policy.WithOrigins("https://porthos-intra.cg.helmo.be","http://localhost:3000").AllowAnyHeader().AllowAnyMethod();
                       });
 });
 
