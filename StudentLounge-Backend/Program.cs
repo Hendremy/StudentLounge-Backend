@@ -61,6 +61,17 @@ builder.Services.AddScoped<IHandleExternalAuth, ExternalAuthHandlers>(services =
     var userHandler = services.GetRequiredService<IHandleUsers>();
     return new ExternalAuthHandlers(userHandler);
 });
+
+var url = "authorizePorhos";
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: url,
+                      policy =>
+                      {
+                          policy.WithOrigins("https://porthos-intra.cg.helmo.be");
+                      });
+});
+
 var app = builder.Build();
 
 //Seeding standard roles and admin account
@@ -78,7 +89,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseCors(url);
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
