@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using StudentLounge_Backend.Models.Lessons.Seed;
 
 namespace StudentLounge_Backend.Models
 {
@@ -14,6 +15,8 @@ namespace StudentLounge_Backend.Models
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            LessonsSeed.Generate(modelBuilder);
         }
     }
 }
