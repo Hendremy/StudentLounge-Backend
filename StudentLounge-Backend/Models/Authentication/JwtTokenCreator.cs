@@ -1,4 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
@@ -18,21 +19,37 @@ namespace StudentLounge_Backend.Models.Authentication
             _audience = audience;
         }
 
-        public string Create(AppUser user)
+        public string Create(AppUser user, IEnumerable<string> roles)
         {
-            var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);
-            var claims = new[]
+            var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512);
+            var claims = CreateClaims(user, roles);
+
+            var token = new JwtSecurityToken(issuer: _issuer, audience: _audience, claims: claims,
+                expires: DateTime.Now.AddDays(365), signingCredentials: creds);
+            //TODO: Réduire la durée d'un token à moins de 24h (+ setup refresh token)
+            //Durée de 365 jours pour pouvoir tester sans refresh à chaque fois
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        private IEnumerable<Claim> CreateClaims(AppUser user, IEnumerable<string> roles)
+        {
+            IList<Claim> claims = new List<Claim>()
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
                 new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.GivenName, user.Fullname),
-                new Claim(ClaimTypes.Role, "Student")//TODO: Changer le role en fonction du role réel de l'user
+                new Claim(ClaimTypes.GivenName, user.Fullname)
             };
+            AddRoleClaims(claims, roles);
+            return claims;
+        }
 
-            var token = new JwtSecurityToken(_issuer, _audience, claims,
-                expires: DateTime.Now.AddDays(1), signingCredentials: creds);
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
+        private void AddRoleClaims(ICollection<Claim> claims, IEnumerable<string> roles)
+        {
+            foreach(var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
         }
     }
 

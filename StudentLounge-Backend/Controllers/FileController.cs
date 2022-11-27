@@ -15,7 +15,7 @@ namespace StudentLounge_Backend.Controllers
     [ApiController]
     public class FileController : ControllerBase
     {
-        [HttpPost("FTPUpload")]
+        [HttpPost("upload")]
         public async Task<IActionResult> FTPUpload([FromForm] FileUpload fileUpload)
         {
             try

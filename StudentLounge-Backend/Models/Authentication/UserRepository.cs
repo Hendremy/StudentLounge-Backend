@@ -13,7 +13,7 @@ namespace StudentLounge_Backend.Models.Authentication
             _userManager = userManager;
         }
 
-        //TODO: Check si ID est ajouté directement à l'objet AppUser
+
         public async Task<IdentityResult> CreateUserAsync(AppUser user, string password)
         {
             var createResult = await _userManager.CreateAsync(user, password);
@@ -62,6 +62,11 @@ namespace StudentLounge_Backend.Models.Authentication
                     return IdentityResult.Failed();
                 }
             }
+        }
+
+        public async Task<IEnumerable<string>> GetUserRoles(AppUser user)
+        {
+            return await _userManager.GetRolesAsync(user);
         }
 
         private async Task<IdentityResult> AddExternalLogin(string providername, string userId, AppUser user)

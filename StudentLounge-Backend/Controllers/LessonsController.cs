@@ -15,7 +15,7 @@ using StudentLounge_Backend.Models;
 namespace StudentLounge_Backend.Controllers
 {
     [Route("[controller]")]
-    //[Authorize(Roles="Student")]
+    [Authorize(Roles="Student")]
     //TODO: Correctement autoriser les utilisateurs, vérifier l'ID dans le token pour voir si correspond à ID fournit en param
     //var id = this.User.Claims.First(i => i.Type == ClaimTypes.NameIdentifier).Value;
     [ApiController]
@@ -32,6 +32,7 @@ namespace StudentLounge_Backend.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Lesson>>> GetLessons()
         {
+            GetUser();
             return await _context.Lessons.ToListAsync();
         }
         /*
@@ -51,7 +52,7 @@ namespace StudentLounge_Backend.Controllers
         */
         // PUT: api/Lessons/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{name}")]
+        /*[HttpPut("{name}")]
         public async Task<IActionResult> CreateLesson(string name)
         {
             if (string.IsNullOrEmpty(name))
@@ -71,7 +72,7 @@ namespace StudentLounge_Backend.Controllers
                 return NotFound(name);
             }
             return NoContent();
-        }
+        }*/
 
         // POST: api/Lessons
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -107,8 +108,22 @@ namespace StudentLounge_Backend.Controllers
             return Ok(lesson);
         }
 
+        [HttpDelete("{lessonId}/user/{userId}")]
+        public async Task<ActionResult<Lesson>> LeaveLesson(int lessonId, string userId)
+        {
+            var lesson = _context.Lessons.Where(lesson => lesson.Id == lessonId).Include(l => l.Users).First();
+            var user = _context.Users.Where(user => user.Id == userId).Include(u => u.Lessons).First();
+
+            lesson.Users.Remove(user);
+            user.Lessons.Remove(lesson);
+
+            await _context.SaveChangesAsync();
+
+            return Ok(lesson);
+        }
+
         // DELETE: api/Lessons/5
-        [HttpDelete("{lessonId}")]
+        /*[HttpDelete("{lessonId}")]
         public async Task<IActionResult> DeleteLesson(int lessonId)
         {
             var lesson = await _context.Lessons.FindAsync(lessonId);
@@ -126,6 +141,15 @@ namespace StudentLounge_Backend.Controllers
         private bool LessonExists(int id)
         {
             return _context.Lessons.Any(e => e.Id == id);
+        }*/
+
+        private void GetUser()
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            if (identity != null)
+            {
+                var claims = identity.Claims;
+            }
         }
     }
 }

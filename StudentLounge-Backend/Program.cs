@@ -17,22 +17,39 @@ var config = builder.Configuration;
 
 // Add services to the container.
 
-builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
     options.OperationFilter<FileUploadFilter>();
     options.AddSecurityDefinition(
-            "token",
+            "Bearer",
             new OpenApiSecurityScheme
             {
                 Type = SecuritySchemeType.Http,
+                Description = "Insérez le JWT",
                 BearerFormat = "JWT",
                 Scheme = "Bearer",
                 In = ParameterLocation.Header,
                 Name = HeaderNames.Authorization
             }
+        );
+
+    options.AddSecurityRequirement(
+        new OpenApiSecurityRequirement
+        {
+            {
+                new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    }
+                },
+                new string[]{ }
+            }
+        }
         );
 });
 
@@ -45,7 +62,11 @@ builder.Services.AddIdentity<AppUser, IdentityRole>()
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>();
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
     .AddJwtBearer(options => {
         options.TokenValidationParameters = new TokenValidationParameters()
         {
@@ -58,6 +79,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JWT:Key"]))
         };
     });
+
+builder.Services.AddControllers();
 
 builder.Services.AddScoped<ICreateToken, JwtTokenCreator>(creator => 
     new JwtTokenCreator(config["JWT:Key"],config["JWT:Issuer"],config["JWT:Audience"]));
@@ -75,7 +98,7 @@ builder.Services.AddScoped<IHandleExternalAuth, ExternalAuthHandlers>(services =
     return new ExternalAuthHandlers(userHandler);
 });
 
-var url = "authorizePorhos";
+var url = "authorizePorthos";
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: url,

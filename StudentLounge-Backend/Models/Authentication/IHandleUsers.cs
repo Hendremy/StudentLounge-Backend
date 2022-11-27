@@ -9,5 +9,7 @@ namespace StudentLounge_Backend.Models.Authentication
         Task<IdentityResult> CreateUserAsync(AppUser user, string password);
         Task<IdentityResult> CreateExternalUserAsync(string providerName, string userId, AppUser user);
         Task<AppUser> FindExternalUserAsync(string providerName, string userId);
+
+        Task<IEnumerable<string>> GetUserRoles(AppUser user);
     }
 }

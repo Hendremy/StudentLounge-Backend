@@ -16,14 +16,16 @@ namespace StudentLounge_Backend.Controllers
         private readonly IHandleExternalAuth _externalAuthHandler;
         private readonly ICreateToken _jwtTokenCreator;
         private readonly ICreateUserInfo _userInfoCreator;
+        private readonly IHandleUsers _userRepository;
 
-        public AuthController([FromServices]IHandleAuth authHandler, 
-            IHandleExternalAuth externalAuthHandler, ICreateToken jwtTokenCreator, ICreateUserInfo userInfoCreator)
+        public AuthController([FromServices]IHandleAuth authHandler, IHandleExternalAuth externalAuthHandler,
+            ICreateToken jwtTokenCreator, ICreateUserInfo userInfoCreator, IHandleUsers userRepository)
         {
             _authHandler = authHandler;
             _externalAuthHandler = externalAuthHandler;
             _jwtTokenCreator = jwtTokenCreator;
             _userInfoCreator = userInfoCreator;
+            _userRepository = userRepository;
         }
 
         [HttpPost("Login")]
@@ -33,7 +35,7 @@ namespace StudentLounge_Backend.Controllers
         public async Task<IActionResult> Login([FromBody] UserLogin userLogin)
         {
             var user = await _authHandler.Login(userLogin);
-            return user != null ? Ok(BuildUserInfo(user)) : NotFound();
+            return user != null ? Ok(await BuildUserInfo(user)) : NotFound();
         }
 
         [HttpPost("Register")]
@@ -43,7 +45,7 @@ namespace StudentLounge_Backend.Controllers
         public async Task<IActionResult> Register([FromBody] UserRegister userRegister)
         {
             var user = await _authHandler.Register(userRegister);
-            return user != null ? Ok(BuildUserInfo(user)) : BadRequest();
+            return user != null ? Ok(await BuildUserInfo(user)) : BadRequest();
         }
 
         [HttpPost("External")]
@@ -52,12 +54,13 @@ namespace StudentLounge_Backend.Controllers
         public async Task<IActionResult> Authenticate([FromBody] ExternalAuthRequest request)
         {
             var user = await _externalAuthHandler.HandleAsync(request);
-            return user != null ? Ok(BuildUserInfo(user)) : BadRequest();
+            return user != null ? Ok(await BuildUserInfo(user)) : BadRequest();
         }
         
-        private UserInfo BuildUserInfo(AppUser user)
+        private async Task<UserInfo> BuildUserInfo(AppUser user)
         {
-            return _userInfoCreator.Create(_jwtTokenCreator, user);
+            var roles = await _userRepository.GetUserRoles(user);
+            return _userInfoCreator.Create(_jwtTokenCreator, user, roles);
         }
     }
 
