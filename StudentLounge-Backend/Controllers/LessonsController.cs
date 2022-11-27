@@ -16,8 +16,6 @@ namespace StudentLounge_Backend.Controllers
 {
     [Route("[controller]")]
     [Authorize(Roles="Student")]
-    //TODO: Correctement autoriser les utilisateurs, vérifier l'ID dans le token pour voir si correspond à ID fournit en param
-    //var id = this.User.Claims.First(i => i.Type == ClaimTypes.NameIdentifier).Value;
     [ApiController]
     public class LessonsController : ControllerBase
     {
@@ -32,7 +30,6 @@ namespace StudentLounge_Backend.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Lesson>>> GetLessons()
         {
-            GetUser();
             return await _context.Lessons.ToListAsync();
         }
         /*
@@ -76,50 +73,61 @@ namespace StudentLounge_Backend.Controllers
 
         // POST: api/Lessons
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Lesson>> PostLesson(Lesson lesson)
-        {
-            _context.Lessons.Add(lesson);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetLesson", new { id = lesson.Id }, lesson);
-        }
+        //[HttpPost]
+        //public async Task<ActionResult<Lesson>> PostLesson(Lesson lesson)
+        //{
+        //    _context.Lessons.Add(lesson);
+        //    await _context.SaveChangesAsync();
+        //
+        //    return CreatedAtAction("GetLesson", new { id = lesson.Id }, lesson);
+        //}
 
         [HttpGet("user/{userId}")]
-        public async Task<ActionResult<List<Lesson>>> GetUserLessons(string userId)
+        public ActionResult<List<Lesson>> GetUserLessons(string userId)
         {
-            var users = _context.Users.Where(user => userId == user.Id).Include(u => u.Lessons);
-            var myUser = users.First();
-            
-            return Ok(myUser.Lessons);
+            if (UserIdMatches(userId))
+            {
+                var users = _context.Users.Where(user => userId == user.Id).Include(u => u.Lessons);
+                var myUser = users.First();
+
+                return Ok(myUser.Lessons);
+            }
+            return Unauthorized();
         }
 
         [HttpPut("{lessonId}/user/{userId}")]
         public async Task<ActionResult<Lesson>> JoinLesson(int lessonId, string userId)
         {
-            var lesson = _context.Lessons.Where(lesson => lesson.Id == lessonId).Include(l => l.Users).First();
-            var user = _context.Users.Where(user => user.Id == userId).Include(u => u.Lessons).First();
+            if (UserIdMatches(userId))
+            {
+                var lesson = _context.Lessons.Where(lesson => lesson.Id == lessonId).Include(l => l.Users).First();
+                var user = _context.Users.Where(user => user.Id == userId).Include(u => u.Lessons).First();
 
-            lesson.Users.Add(user);
-            user.Lessons.Add(lesson);
+                lesson.Users.Add(user);
+                user.Lessons.Add(lesson);
 
-            await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
 
-            return Ok(lesson);
+                return Ok(lesson);
+            }
+            return Unauthorized();
         }
 
         [HttpDelete("{lessonId}/user/{userId}")]
         public async Task<ActionResult<Lesson>> LeaveLesson(int lessonId, string userId)
         {
-            var lesson = _context.Lessons.Where(lesson => lesson.Id == lessonId).Include(l => l.Users).First();
-            var user = _context.Users.Where(user => user.Id == userId).Include(u => u.Lessons).First();
+            if (UserIdMatches(userId)) {
+                var lesson = _context.Lessons.Where(lesson => lesson.Id == lessonId).Include(l => l.Users).First();
+                var user = _context.Users.Where(user => user.Id == userId).Include(u => u.Lessons).First();
 
-            lesson.Users.Remove(user);
-            user.Lessons.Remove(lesson);
+                lesson.Users.Remove(user);
+                user.Lessons.Remove(lesson);
 
-            await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
 
-            return Ok(lesson);
+                return Ok(lesson);
+            }
+            return Unauthorized();
         }
 
         // DELETE: api/Lessons/5
@@ -143,13 +151,21 @@ namespace StudentLounge_Backend.Controllers
             return _context.Lessons.Any(e => e.Id == id);
         }*/
 
-        private void GetUser()
+        private bool UserIdMatches(string userId)
+        {
+            return userId != null && GetUserId() == userId;
+        }
+
+        private string GetUserId()
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
+            string? userId = "";
             if (identity != null)
             {
                 var claims = identity.Claims;
+                userId = claims.FirstOrDefault(o => o.Type == ClaimTypes.NameIdentifier)?.Value;
             }
+            return userId ?? "";
         }
     }
 }

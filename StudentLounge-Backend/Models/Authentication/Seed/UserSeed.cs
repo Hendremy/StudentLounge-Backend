@@ -16,14 +16,21 @@ namespace StudentLounge_Backend.Models.Authentication.Seed
 
         public static void AddDefaultUser(UserManager<AppUser> userManager)
         {
-            AppUser user = userManager.FindByIdAsync("1").Result;
+            AddAdmin(userManager);
+            AddStudent(userManager);
+        }
+
+        private static void AddAdmin(UserManager<AppUser> userManager)
+        {
+            string email = "admin@studentlounge.com";
+            AppUser user = userManager.FindByEmailAsync(email).Result;
             if (user == null)
             {
                 var admin = new AppUser()
                 {
-                    Email = "admin@studentlounge.com",
-                    UserName = "admin@studentlounge.com",
-                    Firstname = "Admin",
+                    Email = email,
+                    UserName = email,
+                    Firstname = "Cool",
                     Lastname = "Admin"
                 };
 
@@ -34,7 +41,29 @@ namespace StudentLounge_Backend.Models.Authentication.Seed
                     var addRole = userManager.AddToRoleAsync(admin, "Admin").Result;
                 }
             }
+        }
 
+        private static void AddStudent(UserManager<AppUser> userManager)
+        {
+            string email = "student@studentlounge.com";
+            AppUser user = userManager.FindByEmailAsync(email).Result;
+            if (user == null)
+            {
+                var test = new AppUser()
+                {
+                    Email = email,
+                    UserName = email,
+                    Firstname = "Test",
+                    Lastname = "Student"
+                };
+
+                var add = userManager.CreateAsync(test, "Root123/").Result;
+
+                if (add != null)
+                {
+                    var addRole = userManager.AddToRoleAsync(test, "Student").Result;
+                }
+            }
         }
     }
 }
