@@ -7,7 +7,7 @@ namespace StudentLounge_Backend.Models.Authentication
         public UserInfo Create(ICreateToken tokenCreator, AppUser user, IEnumerable<string> roles)
         {
             string token = tokenCreator.Create(user, roles);
-            return new UserInfo(user.Id, token, user.Fullname, user.Image);
+            return new UserInfo(user.Id, token, user.Fullname, user.Image, roles);
         }
     }
 }
