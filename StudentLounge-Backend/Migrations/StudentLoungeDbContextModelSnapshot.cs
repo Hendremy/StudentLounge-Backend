@@ -24,8 +24,8 @@ namespace StudentLounge_Backend.Migrations
 
             modelBuilder.Entity("AppUserLesson", b =>
                 {
-                    b.Property<int>("LessonsId")
-                        .HasColumnType("int");
+                    b.Property<string>("LessonsId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("UsersId")
                         .HasColumnType("nvarchar(450)");
@@ -34,7 +34,7 @@ namespace StudentLounge_Backend.Migrations
 
                     b.HasIndex("UsersId");
 
-                    b.ToTable("AppUserLesson", (string)null);
+                    b.ToTable("AppUserLesson");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -246,13 +246,46 @@ namespace StudentLounge_Backend.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("StudentLounge_Backend.Models.Lesson", b =>
+            modelBuilder.Entity("StudentLounge_Backend.Models.Files.LessonFile", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("AddedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("AuthorId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FilePath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LessonId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("Type")
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    b.HasKey("Id");
+
+                    b.HasIndex("AuthorId");
+
+                    b.HasIndex("LessonId");
+
+                    b.ToTable("LessonFile");
+                });
+
+            modelBuilder.Entity("StudentLounge_Backend.Models.Lesson", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -260,27 +293,27 @@ namespace StudentLounge_Backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Lessons", (string)null);
+                    b.ToTable("Lesson");
 
                     b.HasData(
                         new
                         {
-                            Id = -1,
+                            Id = "70c02712-6f41-11ed-a1eb-0242ac120002",
                             Name = "Mathématiques"
                         },
                         new
                         {
-                            Id = -2,
+                            Id = "7b4b00ee-6f41-11ed-a1eb-0242ac120002",
                             Name = "Informatique"
                         },
                         new
                         {
-                            Id = -3,
+                            Id = "7b4b0684-6f41-11ed-a1eb-0242ac120002",
                             Name = "Anglais"
                         },
                         new
                         {
-                            Id = -4,
+                            Id = "7b4b053a-6f41-11ed-a1eb-0242ac120002",
                             Name = "Cybersécurité"
                         });
                 });
@@ -349,6 +382,30 @@ namespace StudentLounge_Backend.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("StudentLounge_Backend.Models.Files.LessonFile", b =>
+                {
+                    b.HasOne("StudentLounge_Backend.Models.AppUser", "Author")
+                        .WithMany()
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("StudentLounge_Backend.Models.Lesson", "Lesson")
+                        .WithMany("Files")
+                        .HasForeignKey("LessonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Author");
+
+                    b.Navigation("Lesson");
+                });
+
+            modelBuilder.Entity("StudentLounge_Backend.Models.Lesson", b =>
+                {
+                    b.Navigation("Files");
                 });
 #pragma warning restore 612, 618
         }

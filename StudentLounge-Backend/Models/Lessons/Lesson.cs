@@ -6,13 +6,14 @@ namespace StudentLounge_Backend.Models
 {
     public class Lesson
     {
-        public int Id { get; set; }
+        [Key]
+        public string Id { get; set; }
         public string Name { get; set; }
 
         [JsonIgnore]
-        public IEnumerable<AppUser> Users { get; set; } = new List<AppUser>();
+        public ICollection<AppUser> Users { get; set; }
 
         [JsonIgnore]
-        public IEnumerable<LessonFile> Files { get; set; } = new List<LessonFile>();
+        public ICollection<LessonFile> Files { get; set; }
     }
 }

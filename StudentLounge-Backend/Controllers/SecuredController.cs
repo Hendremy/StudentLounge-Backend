@@ -6,9 +6,9 @@ namespace StudentLounge_Backend.Controllers
 {
     public abstract class SecuredController : ControllerBase
     {
-        protected bool UserIdMatches(string userId)
+        protected bool UserIdIsValid(string userId)
         {
-            return userId != null && GetUserId() == userId;
+            return !string.IsNullOrWhiteSpace(userId);
         }
 
         protected string GetUserId()

@@ -83,13 +83,13 @@ namespace StudentLounge_Backend.Controllers
         //    return CreatedAtAction("GetLesson", new { id = lesson.Id }, lesson);
         //}
 
-        [HttpGet("user/{userId}")]
-        public ActionResult<IEnumerable<Lesson>> GetUserLessons(string userId)
+        [HttpGet]
+        public ActionResult<IEnumerable<Lesson>> GetUserLessons()
         {
             string userId = GetUserId();
             if (UserIdIsValid(userId))
             {
-                var users = _context.Users.Where(user => userId == user.Id).Include(u => u.Lessons);
+                var users = _context.AppUsers.Where(user => userId == user.Id).Include(u => u.Lessons);
                 var myUser = users.First();
 
                 return Ok(myUser.Lessons);
@@ -98,13 +98,13 @@ namespace StudentLounge_Backend.Controllers
         }
 
         [HttpPut("{lessonId}")]
-        public async Task<ActionResult<Lesson>> JoinLesson(int lessonId)
+        public async Task<ActionResult<Lesson>> JoinLesson(string lessonId)
         {
             string userId = GetUserId();
             if (UserIdIsValid(userId))
             {
                 var lesson = _context.Lessons.Where(lesson => lesson.Id == lessonId).Include(l => l.Users).First();
-                var user = _context.Users.Where(user => user.Id == userId).Include(u => u.Lessons).First();
+                var user = _context.AppUsers.Where(user => user.Id == userId).Include(u => u.Lessons).First();
 
                 lesson.Users.Add(user);
                 user.Lessons.Add(lesson);
@@ -117,12 +117,12 @@ namespace StudentLounge_Backend.Controllers
         }
 
         [HttpDelete("{lessonId}")]
-        public async Task<ActionResult<Lesson>> LeaveLesson(int lessonId)
+        public async Task<ActionResult<Lesson>> LeaveLesson(string lessonId)
         {
             string userId = GetUserId();
             if (UserIdIsValid(userId)) {
                 var lesson = _context.Lessons.Where(lesson => lesson.Id == lessonId).Include(l => l.Users).First();
-                var user = _context.Users.Where(user => user.Id == userId).Include(u => u.Lessons).First();
+                var user = _context.AppUsers.Where(user => user.Id == userId).Include(u => u.Lessons).First();
 
                 lesson.Users.Remove(user);
                 user.Lessons.Remove(lesson);

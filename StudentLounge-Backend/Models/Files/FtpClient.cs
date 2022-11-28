@@ -25,39 +25,53 @@ namespace StudentLounge_Backend.Models.Files
         }
 
         //?? Pas moyen d'ouvrir le Stream du fichier et de write directement sur le requestStream ??
-        public FtpWebResponse Upload(string path, IFormFile file)
+        public async Task<FtpWebResponse> Upload(string path, IFormFile file)
         {
-            string uploadUrl = $"{_baseUrl}/{path}/{file.FileName}";
-            var request = CreateRequest(uploadUrl, WebRequestMethods.Ftp.UploadFile);
-            byte[] fileContents = GetFileContents(file);
-            using (Stream requestStream = request.GetRequestStream())
+            try
             {
-                requestStream.Write(fileContents, 0, fileContents.Length);
+                string uploadUrl = $"{_baseUrl}/{path}/{file.FileName}";
+                var request = CreateRequest(uploadUrl, WebRequestMethods.Ftp.UploadFile);
+                return await CopyFileToServer(file, request);
             }
-            return (FtpWebResponse)request.GetResponse();
+            catch (IOException ex)
+            {
+                return null;
+            }
         }
 
-        private byte[] GetFileContents(IFormFile file)
+        //private byte[] GetFileContents(IFormFile file)
+        //{
+        //    byte[] fileContents;
+        //    using (var stream = file.OpenReadStream()) { 
+        //        using (var ms = new MemoryStream())
+        //        {
+        //            fileContents = WriteToMemoryStream(stream, ms);
+        //        }
+        //    }
+        //    return fileContents;
+        //}
+
+        //private byte[] WriteToMemoryStream(Stream from, MemoryStream to)
+        //{
+        //    int read;
+        //    byte[] buffer = new byte[1024];
+        //    while ((read = from.Read(buffer, 0, buffer.Length)) > 0)
+        //    {
+        //        to.Write(buffer, 0, read);
+        //    }
+        //    return to.ToArray();
+        //}
+
+        private async Task<FtpWebResponse> CopyFileToServer(IFormFile file, FtpWebRequest request)
         {
-            byte[] fileContents;
-            using (var stream = file.OpenReadStream()) { 
-                using (var ms = new MemoryStream())
+            using(var fileStream = file.OpenReadStream())
+            {
+                using(var serverStream = request.GetRequestStream())
                 {
-                    fileContents = WriteToMemoryStream(stream, ms);
+                    await fileStream.CopyToAsync(serverStream);
                 }
             }
-            return fileContents;
-        }
-
-        private byte[] WriteToMemoryStream(Stream from, MemoryStream to)
-        {
-            int read;
-            byte[] buffer = new byte[1024];
-            while ((read = from.Read(buffer, 0, buffer.Length)) > 0)
-            {
-                to.Write(buffer, 0, read);
-            }
-            return to.ToArray();
+            return (FtpWebResponse)request.GetResponse();
         }
 
         private FtpWebRequest CreateRequest(string url, string method)

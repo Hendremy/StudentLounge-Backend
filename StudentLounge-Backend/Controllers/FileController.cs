@@ -31,8 +31,8 @@ namespace StudentLounge_Backend.Controllers
         {
             try
             {
-                var response = _transferFiles.Upload(fileUpload);
-                Console.WriteLine("Upload File Complete, status {0}", response.StatusDescription);
+                var response = await _transferFiles.Upload(",",fileUpload.File);
+                //Console.WriteLine("Upload File Complete, status {0}", response.StatusDescription);
                 return Ok("Upload Successfuly.");
             }
             catch (Exception ex)

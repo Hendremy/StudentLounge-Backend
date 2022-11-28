@@ -11,6 +11,7 @@ using StudentLounge_Backend.Models.UploadFile;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.OpenApi.Models;
 using Microsoft.Net.Http.Headers;
+using StudentLounge_Backend.Models.Files;
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
@@ -96,6 +97,11 @@ builder.Services.AddScoped<IHandleExternalAuth, ExternalAuthHandlers>(services =
 {
     var userHandler = services.GetRequiredService<IHandleUsers>();
     return new ExternalAuthHandlers(userHandler);
+});
+
+builder.Services.AddScoped<ITransferFiles, FtpClient>(services =>
+{
+    return new FtpClient(config["FTP:Server"],config["FTP:MainDirectory"],config["FTP:Login"],config["FTP:Password"], true);
 });
 
 var url = "authorizePorthos";

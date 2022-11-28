@@ -13,7 +13,7 @@ namespace StudentLounge_Backend.Models
 
         public DbSet<LessonFile> LessonFiles { get; set; }
 
-        public DbSet<AppUser> Users { get; set; }
+        public DbSet<AppUser> AppUsers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

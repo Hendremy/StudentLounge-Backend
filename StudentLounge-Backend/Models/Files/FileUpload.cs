@@ -7,5 +7,7 @@ namespace StudentLounge_Backend.Models.UploadFile
     {
         [Required]
         public IFormFile File { get; set; }
+        public string LessonId { get; set; }
+
     }
 }
