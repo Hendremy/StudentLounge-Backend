@@ -12,8 +12,8 @@ using StudentLounge_Backend.Models;
 namespace StudentLounge_Backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20221128173051_Droplessons")]
-    partial class Droplessons
+    [Migration("20221128173416_ChangeLessonId")]
+    partial class ChangeLessonId
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -26,13 +26,13 @@ namespace StudentLounge_Backend.Migrations
 
             modelBuilder.Entity("AppUserLesson", b =>
                 {
-                    b.Property<string>("LessonsId")
+                    b.Property<string>("LessonsLessonId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("UsersId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("LessonsId", "UsersId");
+                    b.HasKey("LessonsLessonId", "UsersId");
 
                     b.HasIndex("UsersId");
 
@@ -269,7 +269,6 @@ namespace StudentLounge_Backend.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LessonId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("Type")
@@ -281,41 +280,41 @@ namespace StudentLounge_Backend.Migrations
 
                     b.HasIndex("LessonId");
 
-                    b.ToTable("LessonFile");
+                    b.ToTable("LessonFiles");
                 });
 
             modelBuilder.Entity("StudentLounge_Backend.Models.Lesson", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<string>("LessonId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("LessonId");
 
-                    b.ToTable("Lesson");
+                    b.ToTable("Lessons");
 
                     b.HasData(
                         new
                         {
-                            Id = "70c02712-6f41-11ed-a1eb-0242ac120002",
+                            LessonId = "70c02712-6f41-11ed-a1eb-0242ac120002",
                             Name = "Mathématiques"
                         },
                         new
                         {
-                            Id = "7b4b00ee-6f41-11ed-a1eb-0242ac120002",
+                            LessonId = "7b4b00ee-6f41-11ed-a1eb-0242ac120002",
                             Name = "Informatique"
                         },
                         new
                         {
-                            Id = "7b4b0684-6f41-11ed-a1eb-0242ac120002",
+                            LessonId = "7b4b0684-6f41-11ed-a1eb-0242ac120002",
                             Name = "Anglais"
                         },
                         new
                         {
-                            Id = "7b4b053a-6f41-11ed-a1eb-0242ac120002",
+                            LessonId = "7b4b053a-6f41-11ed-a1eb-0242ac120002",
                             Name = "Cybersécurité"
                         });
                 });
@@ -324,7 +323,7 @@ namespace StudentLounge_Backend.Migrations
                 {
                     b.HasOne("StudentLounge_Backend.Models.Lesson", null)
                         .WithMany()
-                        .HasForeignKey("LessonsId")
+                        .HasForeignKey("LessonsLessonId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -396,9 +395,7 @@ namespace StudentLounge_Backend.Migrations
 
                     b.HasOne("StudentLounge_Backend.Models.Lesson", "Lesson")
                         .WithMany("Files")
-                        .HasForeignKey("LessonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("LessonId");
 
                     b.Navigation("Author");
 

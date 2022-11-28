@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using StudentLounge_Backend.Models.Files;
+using System.Text.Json.Serialization;
 
 namespace StudentLounge_Backend.Models
 {
@@ -11,7 +13,10 @@ namespace StudentLounge_Backend.Models
 
         public string Fullname => $"{Firstname} {Lastname}";
 
+        [JsonIgnore]
         public List<Lesson> Lessons { get; set; } = new List<Lesson>();
+        [JsonIgnore]
+        public List<LessonFile> PostedFiles { get; set; } = new List<LessonFile>();
 
     }
 }

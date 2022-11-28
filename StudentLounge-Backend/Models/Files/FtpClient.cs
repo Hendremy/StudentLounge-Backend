@@ -16,24 +16,31 @@ namespace StudentLounge_Backend.Models.Files
             _sslEnabled = sslEnabled;
         }
 
-        public Stream Download(string filePath)
-        {
-            string downloadUrl = $"{_baseUrl}/{filePath}";
-            FtpWebRequest request = CreateRequest(downloadUrl, WebRequestMethods.Ftp.DownloadFile);
-            FtpWebResponse response = (FtpWebResponse)request.GetResponse();
-            return response.GetResponseStream();
-        }
-
-        //?? Pas moyen d'ouvrir le Stream du fichier et de write directement sur le requestStream ??
-        public async Task<FtpWebResponse> Upload(string path, IFormFile file)
+        public Stream GetDownloadStream(string filePath)
         {
             try
             {
-                string uploadUrl = $"{_baseUrl}/{path}/{file.FileName}";
+                string downloadUrl = $"{_baseUrl}/{filePath}";
+                FtpWebRequest request = CreateRequest(downloadUrl, WebRequestMethods.Ftp.DownloadFile);
+                FtpWebResponse response = (FtpWebResponse)request.GetResponse();
+                return response.GetResponseStream();
+            }
+            catch(Exception ex)
+            {
+                return null;
+            }
+        }
+
+        //?? Pas moyen d'ouvrir le Stream du fichier et de write directement sur le requestStream ??
+        public async Task<FtpWebResponse> Upload(string toDirectoryPath, IFormFile file)
+        {
+            try
+            {
+                string uploadUrl = $"{_baseUrl}/{toDirectoryPath}/{file.FileName}";
                 var request = CreateRequest(uploadUrl, WebRequestMethods.Ftp.UploadFile);
                 return await CopyFileToServer(file, request);
             }
-            catch (IOException ex)
+            catch (Exception ex)
             {
                 return null;
             }

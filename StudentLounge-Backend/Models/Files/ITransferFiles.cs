@@ -6,6 +6,6 @@ namespace StudentLounge_Backend.Models.Files
     public interface ITransferFiles
     {
         Task<FtpWebResponse> Upload(string path, IFormFile file);
-        Stream Download(string filename);
+        Stream GetDownloadStream(string filename);
     }
 }

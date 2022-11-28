@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace StudentLounge_Backend.Migrations
 {
-    public partial class Droplessons : Migration
+    public partial class ChangeLessonId : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -17,9 +17,17 @@ namespace StudentLounge_Backend.Migrations
                 name: "PK_Lessons",
                 table: "Lessons");
 
-            migrationBuilder.RenameTable(
-                name: "Lessons",
-                newName: "Lesson");
+            migrationBuilder.DropPrimaryKey(
+                name: "PK_AppUserLesson",
+                table: "AppUserLesson");
+
+            migrationBuilder.DropColumn(
+                name: "Id",
+                table: "Lessons");
+
+            migrationBuilder.DropColumn(
+                name: "LessonsId",
+                table: "AppUserLesson");
 
             migrationBuilder.RenameColumn(
                 name: "LastName",
@@ -31,30 +39,32 @@ namespace StudentLounge_Backend.Migrations
                 table: "AspNetUsers",
                 newName: "Firstname");
 
-            migrationBuilder.AlterColumn<string>(
-                name: "LessonsId",
+            migrationBuilder.AddColumn<string>(
+                name: "LessonId",
+                table: "Lessons",
+                type: "nvarchar(450)",
+                nullable: false,
+                defaultValue: "");
+
+            migrationBuilder.AddColumn<string>(
+                name: "LessonsLessonId",
                 table: "AppUserLesson",
                 type: "nvarchar(450)",
                 nullable: false,
-                oldClrType: typeof(int),
-                oldType: "int");
-
-            migrationBuilder.AlterColumn<string>(
-                name: "Id",
-                table: "Lesson",
-                type: "nvarchar(450)",
-                nullable: false,
-                oldClrType: typeof(int),
-                oldType: "int")
-                .OldAnnotation("SqlServer:Identity", "1, 1");
+                defaultValue: "");
 
             migrationBuilder.AddPrimaryKey(
-                name: "PK_Lesson",
-                table: "Lesson",
-                column: "Id");
+                name: "PK_Lessons",
+                table: "Lessons",
+                column: "LessonId");
+
+            migrationBuilder.AddPrimaryKey(
+                name: "PK_AppUserLesson",
+                table: "AppUserLesson",
+                columns: new[] { "LessonsLessonId", "UsersId" });
 
             migrationBuilder.CreateTable(
-                name: "LessonFile",
+                name: "LessonFiles",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -63,28 +73,27 @@ namespace StudentLounge_Backend.Migrations
                     AddedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     FilePath = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Type = table.Column<int>(type: "int", nullable: false),
-                    LessonId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    LessonId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_LessonFile", x => x.Id);
+                    table.PrimaryKey("PK_LessonFiles", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_LessonFile_AspNetUsers_AuthorId",
+                        name: "FK_LessonFiles_AspNetUsers_AuthorId",
                         column: x => x.AuthorId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_LessonFile_Lesson_LessonId",
+                        name: "FK_LessonFiles_Lessons_LessonId",
                         column: x => x.LessonId,
-                        principalTable: "Lesson",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalTable: "Lessons",
+                        principalColumn: "LessonId");
                 });
 
             migrationBuilder.InsertData(
-                table: "Lesson",
-                columns: new[] { "Id", "Name" },
+                table: "Lessons",
+                columns: new[] { "LessonId", "Name" },
                 values: new object[,]
                 {
                     { "70c02712-6f41-11ed-a1eb-0242ac120002", "Mathématiques" },
@@ -94,60 +103,72 @@ namespace StudentLounge_Backend.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_LessonFile_AuthorId",
-                table: "LessonFile",
+                name: "IX_LessonFiles_AuthorId",
+                table: "LessonFiles",
                 column: "AuthorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_LessonFile_LessonId",
-                table: "LessonFile",
+                name: "IX_LessonFiles_LessonId",
+                table: "LessonFiles",
                 column: "LessonId");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_AppUserLesson_Lesson_LessonsId",
+                name: "FK_AppUserLesson_Lessons_LessonsLessonId",
                 table: "AppUserLesson",
-                column: "LessonsId",
-                principalTable: "Lesson",
-                principalColumn: "Id",
+                column: "LessonsLessonId",
+                principalTable: "Lessons",
+                principalColumn: "LessonId",
                 onDelete: ReferentialAction.Cascade);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_AppUserLesson_Lesson_LessonsId",
+                name: "FK_AppUserLesson_Lessons_LessonsLessonId",
                 table: "AppUserLesson");
 
             migrationBuilder.DropTable(
-                name: "LessonFile");
+                name: "LessonFiles");
 
             migrationBuilder.DropPrimaryKey(
-                name: "PK_Lesson",
-                table: "Lesson");
+                name: "PK_Lessons",
+                table: "Lessons");
+
+            migrationBuilder.DropPrimaryKey(
+                name: "PK_AppUserLesson",
+                table: "AppUserLesson");
 
             migrationBuilder.DeleteData(
-                table: "Lesson",
-                keyColumn: "Id",
+                table: "Lessons",
+                keyColumn: "LessonId",
+                keyColumnType: "nvarchar(450)",
                 keyValue: "70c02712-6f41-11ed-a1eb-0242ac120002");
 
             migrationBuilder.DeleteData(
-                table: "Lesson",
-                keyColumn: "Id",
+                table: "Lessons",
+                keyColumn: "LessonId",
+                keyColumnType: "nvarchar(450)",
                 keyValue: "7b4b00ee-6f41-11ed-a1eb-0242ac120002");
 
             migrationBuilder.DeleteData(
-                table: "Lesson",
-                keyColumn: "Id",
+                table: "Lessons",
+                keyColumn: "LessonId",
+                keyColumnType: "nvarchar(450)",
                 keyValue: "7b4b053a-6f41-11ed-a1eb-0242ac120002");
 
             migrationBuilder.DeleteData(
-                table: "Lesson",
-                keyColumn: "Id",
+                table: "Lessons",
+                keyColumn: "LessonId",
+                keyColumnType: "nvarchar(450)",
                 keyValue: "7b4b0684-6f41-11ed-a1eb-0242ac120002");
 
-            migrationBuilder.RenameTable(
-                name: "Lesson",
-                newName: "Lessons");
+            migrationBuilder.DropColumn(
+                name: "LessonId",
+                table: "Lessons");
+
+            migrationBuilder.DropColumn(
+                name: "LessonsLessonId",
+                table: "AppUserLesson");
 
             migrationBuilder.RenameColumn(
                 name: "Lastname",
@@ -159,27 +180,30 @@ namespace StudentLounge_Backend.Migrations
                 table: "AspNetUsers",
                 newName: "FirstName");
 
-            migrationBuilder.AlterColumn<int>(
-                name: "LessonsId",
-                table: "AppUserLesson",
-                type: "int",
-                nullable: false,
-                oldClrType: typeof(string),
-                oldType: "nvarchar(450)");
-
-            migrationBuilder.AlterColumn<int>(
+            migrationBuilder.AddColumn<int>(
                 name: "Id",
                 table: "Lessons",
                 type: "int",
                 nullable: false,
-                oldClrType: typeof(string),
-                oldType: "nvarchar(450)")
+                defaultValue: 0)
                 .Annotation("SqlServer:Identity", "1, 1");
+
+            migrationBuilder.AddColumn<int>(
+                name: "LessonsId",
+                table: "AppUserLesson",
+                type: "int",
+                nullable: false,
+                defaultValue: 0);
 
             migrationBuilder.AddPrimaryKey(
                 name: "PK_Lessons",
                 table: "Lessons",
                 column: "Id");
+
+            migrationBuilder.AddPrimaryKey(
+                name: "PK_AppUserLesson",
+                table: "AppUserLesson",
+                columns: new[] { "LessonsId", "UsersId" });
 
             migrationBuilder.AddForeignKey(
                 name: "FK_AppUserLesson_Lessons_LessonsId",
