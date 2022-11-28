@@ -9,6 +9,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.AspNetCore.Authorization;
 using StudentLounge_Backend.Models.Files;
 using StudentLounge_Backend.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace StudentLounge_Backend.Controllers
 {
@@ -77,7 +78,9 @@ namespace StudentLounge_Backend.Controllers
         [HttpGet("lesson/{lessonId}")]
         public async Task<ActionResult<IEnumerable<LessonFile>>> GetLessonFiles(string lessonId)
         {
-            var lesson = _appDbContext.Lessons.FirstOrDefault(lesson => lesson.Id == lessonId);
+            var lesson = _appDbContext.Lessons
+                .Include(lesson => lesson.Files)
+                .FirstOrDefault(lesson => lesson.Id == lessonId);
             if(lesson != null)
             {
                 var files = lesson.Files.ToList();
