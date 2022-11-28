@@ -27,7 +27,7 @@ namespace StudentLounge_Backend.Controllers
         }
 
         // GET: api/Lessons
-        [HttpGet]
+        [HttpGet("all")]
         public async Task<ActionResult<IEnumerable<Lesson>>> GetLessons()
         {
             return await _context.Lessons.ToListAsync();
@@ -86,7 +86,8 @@ namespace StudentLounge_Backend.Controllers
         [HttpGet("user/{userId}")]
         public ActionResult<IEnumerable<Lesson>> GetUserLessons(string userId)
         {
-            if (UserIdMatches(userId))
+            string userId = GetUserId();
+            if (UserIdIsValid(userId))
             {
                 var users = _context.Users.Where(user => userId == user.Id).Include(u => u.Lessons);
                 var myUser = users.First();
@@ -96,10 +97,11 @@ namespace StudentLounge_Backend.Controllers
             return Unauthorized();
         }
 
-        [HttpPut("{lessonId}/user/{userId}")]
-        public async Task<ActionResult<Lesson>> JoinLesson(int lessonId, string userId)
+        [HttpPut("{lessonId}")]
+        public async Task<ActionResult<Lesson>> JoinLesson(int lessonId)
         {
-            if (UserIdMatches(userId))
+            string userId = GetUserId();
+            if (UserIdIsValid(userId))
             {
                 var lesson = _context.Lessons.Where(lesson => lesson.Id == lessonId).Include(l => l.Users).First();
                 var user = _context.Users.Where(user => user.Id == userId).Include(u => u.Lessons).First();
@@ -114,10 +116,11 @@ namespace StudentLounge_Backend.Controllers
             return Unauthorized();
         }
 
-        [HttpDelete("{lessonId}/user/{userId}")]
-        public async Task<ActionResult<Lesson>> LeaveLesson(int lessonId, string userId)
+        [HttpDelete("{lessonId}")]
+        public async Task<ActionResult<Lesson>> LeaveLesson(int lessonId)
         {
-            if (UserIdMatches(userId)) {
+            string userId = GetUserId();
+            if (UserIdIsValid(userId)) {
                 var lesson = _context.Lessons.Where(lesson => lesson.Id == lessonId).Include(l => l.Users).First();
                 var user = _context.Users.Where(user => user.Id == userId).Include(u => u.Lessons).First();
 
