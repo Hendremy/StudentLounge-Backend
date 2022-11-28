@@ -14,7 +14,7 @@ using Microsoft.EntityFrameworkCore;
 namespace StudentLounge_Backend.Controllers
 {
     [Route("[controller]")]
-    [Authorize("Student")]
+    [Authorize(Roles ="Student")]
     [ApiController]
     public class LessonFileController : SecuredController
     {
@@ -31,6 +31,7 @@ namespace StudentLounge_Backend.Controllers
         [HttpPost]
         public async Task<IActionResult> Upload([FromForm] FileUpload fileUpload)
         {
+            //Il y a moyen de récupérer le fichier par Request.Form.Files
             var userId = GetUserId();
             var lesson = _appDbContext.Lessons.FirstOrDefault(lesson => lesson.Id == fileUpload.LessonId);
             if (lesson != null)

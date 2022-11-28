@@ -15,6 +15,8 @@ namespace StudentLounge_Backend.Models.Files
         [JsonIgnore]
         public Lesson Lesson { get; set; }
 
+        public LessonFile() { }
+
         public LessonFile(AppUser author, string name, string path, LessonFileType type, Lesson lesson)
         {
             Author = author;
