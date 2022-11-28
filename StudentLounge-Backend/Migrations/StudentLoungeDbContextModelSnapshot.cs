@@ -34,7 +34,7 @@ namespace StudentLounge_Backend.Migrations
 
                     b.HasIndex("UsersId");
 
-                    b.ToTable("AppUserLesson");
+                    b.ToTable("AppUserLesson", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -260,7 +260,7 @@ namespace StudentLounge_Backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Lessons");
+                    b.ToTable("Lessons", (string)null);
 
                     b.HasData(
                         new

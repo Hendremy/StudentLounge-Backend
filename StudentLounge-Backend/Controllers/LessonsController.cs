@@ -17,7 +17,7 @@ namespace StudentLounge_Backend.Controllers
     [Route("[controller]")]
     [Authorize(Roles="Student")]
     [ApiController]
-    public class LessonsController : ControllerBase
+    public class LessonsController : SecuredController
     {
         private readonly AppDbContext _context;
 
@@ -32,6 +32,7 @@ namespace StudentLounge_Backend.Controllers
         {
             return await _context.Lessons.ToListAsync();
         }
+
         /*
         // GET: api/Lessons/5
         [HttpGet("{id}")]
@@ -83,7 +84,7 @@ namespace StudentLounge_Backend.Controllers
         //}
 
         [HttpGet("user/{userId}")]
-        public ActionResult<List<Lesson>> GetUserLessons(string userId)
+        public ActionResult<IEnumerable<Lesson>> GetUserLessons(string userId)
         {
             if (UserIdMatches(userId))
             {
@@ -150,22 +151,5 @@ namespace StudentLounge_Backend.Controllers
         {
             return _context.Lessons.Any(e => e.Id == id);
         }*/
-
-        private bool UserIdMatches(string userId)
-        {
-            return userId != null && GetUserId() == userId;
-        }
-
-        private string GetUserId()
-        {
-            var identity = HttpContext.User.Identity as ClaimsIdentity;
-            string? userId = "";
-            if (identity != null)
-            {
-                var claims = identity.Claims;
-                userId = claims.FirstOrDefault(o => o.Type == ClaimTypes.NameIdentifier)?.Value;
-            }
-            return userId ?? "";
-        }
     }
 }
