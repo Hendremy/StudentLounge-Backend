@@ -12,7 +12,7 @@ namespace StudentLounge_Backend.Models.Files
         public FtpClient(string serverAddress, string mainDirectory, string login, string password, bool sslEnabled)
         {
             _credential = new NetworkCredential(login, password);
-            _baseUrl = $"ftp://{login}@{serverAddress}/{mainDirectory}";
+            _baseUrl = $"ftp://{serverAddress}//Students/E191088/{mainDirectory}";
             _sslEnabled = sslEnabled;
         }
 
@@ -32,7 +32,7 @@ namespace StudentLounge_Backend.Models.Files
         }
 
         //?? Pas moyen d'ouvrir le Stream du fichier et de write directement sur le requestStream ??
-        public async Task<FtpWebResponse> Upload(string toDirectoryPath, IFormFile file)
+        /*public async Task<FtpWebResponse> Upload(string toDirectoryPath, IFormFile file)
         {
             try
             {
@@ -44,30 +44,73 @@ namespace StudentLounge_Backend.Models.Files
             {
                 return null;
             }
+        }*/
+        /*public async Task<FtpWebResponse> Upload(string toDirectoryPath, IFormFile file)
+        {
+            string uploadUrl = $"{_baseUrl}/{toDirectoryPath}/{file.FileName}";
+            //string uploadUrl = String.Format("ftp://{0}/{1}/{2}", "e191088@ftps.cg.helmo.be", "/Students/E191088/StudentLounge", file.FileName);
+            //string uploadUrl = String.Format("ftp://{0}/{1}/{2}", "e191088@ftps.cg.helmo.be", "/Students/E191088/StudentLounge", file.FileName);
+            var request = CreateRequest(uploadUrl, WebRequestMethods.Ftp.UploadFile);
+            byte[] fileContents = GetFileContents(file);
+            using (Stream requestStream = request.GetRequestStream())
+            {
+                requestStream.Write(fileContents, 0, fileContents.Length);
+            }
+            return (FtpWebResponse) request.GetResponse();
+        }*/
+
+        
+        public async Task<FtpWebResponse> Upload(string toDirectoryPath, IFormFile file)
+        {
+            string uploadUrl = String.Format("ftp://{0}/{1}/{2}", "e191088@ftps.cg.helmo.be", "Students/E191088/StudentLounge", file.FileName);
+
+            var request = (FtpWebRequest)WebRequest.Create(uploadUrl);
+            request.EnableSsl = true;
+            request.Method = WebRequestMethods.Ftp.UploadFile;
+            request.Credentials = new NetworkCredential("e191088", "Q5C7eeEv");
+            byte[] buffer = new byte[1024];
+            var stream = file.OpenReadStream();
+            byte[] fileContents;
+            using (var ms = new MemoryStream())
+            {
+                int read;
+                while ((read = stream.Read(buffer, 0, buffer.Length)) > 0)
+                {
+                    ms.Write(buffer, 0, read);
+                }
+                fileContents = ms.ToArray();
+            }
+            using (Stream requestStream = request.GetRequestStream())
+            {
+
+                requestStream.Write(fileContents, 0, fileContents.Length);
+            }
+            FtpWebResponse response = (FtpWebResponse)request.GetResponse();
+            return response;
         }
 
-        //private byte[] GetFileContents(IFormFile file)
-        //{
-        //    byte[] fileContents;
-        //    using (var stream = file.OpenReadStream()) { 
-        //        using (var ms = new MemoryStream())
-        //        {
-        //            fileContents = WriteToMemoryStream(stream, ms);
-        //        }
-        //    }
-        //    return fileContents;
-        //}
+        private byte[] GetFileContents(IFormFile file)
+        {
+            byte[] fileContents;
+            using (var stream = file.OpenReadStream()) { 
+                using (var ms = new MemoryStream())
+                {
+                    fileContents = WriteToMemoryStream(stream, ms);
+                }
+            }
+            return fileContents;
+        }
 
-        //private byte[] WriteToMemoryStream(Stream from, MemoryStream to)
-        //{
-        //    int read;
-        //    byte[] buffer = new byte[1024];
-        //    while ((read = from.Read(buffer, 0, buffer.Length)) > 0)
-        //    {
-        //        to.Write(buffer, 0, read);
-        //    }
-        //    return to.ToArray();
-        //}
+        private byte[] WriteToMemoryStream(Stream from, MemoryStream to)
+        {
+            int read;
+            byte[] buffer = new byte[1024];
+            while ((read = from.Read(buffer, 0, buffer.Length)) > 0)
+            {
+                to.Write(buffer, 0, read);
+            }
+            return to.ToArray();
+        }
 
         private async Task<FtpWebResponse> CopyFileToServer(IFormFile file, FtpWebRequest request)
         {
@@ -75,7 +118,7 @@ namespace StudentLounge_Backend.Models.Files
             {
                 using(var serverStream = request.GetRequestStream())
                 {
-                    await fileStream.CopyToAsync(serverStream);
+                    fileStream.CopyTo(serverStream);
                 }
             }
             return (FtpWebResponse)request.GetResponse();
@@ -89,5 +132,20 @@ namespace StudentLounge_Backend.Models.Files
             request.Credentials = _credential;
             return request;
         }
+
+        /*public async Task<FtpWebResponse> Upload(string path, IFormFile file)
+        {
+            string uploadUrl = String.Format("ftp://{0}/{1}/{2}", "e191088@ftps.cg.helmo.be", "/Students/E191088/StudentLounge", file.FileName);
+            FtpWebRequest request = (FtpWebRequest)WebRequest.Create(uploadUrl);
+            request.Credentials = _credential;
+            request.Method = WebRequestMethods.Ftp.UploadFile;
+            request.EnableSsl = _sslEnabled;
+
+            using (Stream ftpStream = request.GetRequestStream())
+            {
+                file.CopyTo(ftpStream);
+            }
+            return (FtpWebResponse) request.GetResponse();
+        }*/
     }
 }

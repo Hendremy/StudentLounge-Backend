@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 namespace StudentLounge_Backend.Models.Files
@@ -6,6 +7,7 @@ namespace StudentLounge_Backend.Models.Files
     public class LessonFile
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string Id { get; set; }
         public AppUser Author { get; set; }
         public string Name { get; set; }

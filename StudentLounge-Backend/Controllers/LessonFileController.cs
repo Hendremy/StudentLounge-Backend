@@ -33,7 +33,7 @@ namespace StudentLounge_Backend.Controllers
         {
             //Il y a moyen de récupérer le fichier par Request.Form.Files
             var userId = GetUserId();
-            var lesson = _appDbContext.Lessons.FirstOrDefault(lesson => lesson.Id == fileUpload.LessonId);
+            var lesson = _appDbContext.Lessons.Include(lesson => lesson.Files).FirstOrDefault(lesson => lesson.Id == fileUpload.LessonId);
             if (lesson != null)
             {
                 string directoryPath = $"{LessonsDirectory}/{lesson.Id}"; 
@@ -53,6 +53,7 @@ namespace StudentLounge_Backend.Controllers
             {
                 var user = _appDbContext.AppUsers.Where(user => user.Id == userId).First();
                 var postedFile = new LessonFile(user, fileUpload.FileName, directoryPath, fileUpload.Type, lesson);
+                _appDbContext.LessonFiles.Add(postedFile);
                 user.PostedFiles.Add(postedFile);
                 lesson.Files.Add(postedFile);
                 _appDbContext.SaveChanges();
