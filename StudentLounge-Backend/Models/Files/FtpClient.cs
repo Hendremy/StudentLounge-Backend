@@ -12,7 +12,7 @@ namespace StudentLounge_Backend.Models.Files
         public FtpClient(string serverAddress, string mainDirectory, string login, string password, bool sslEnabled)
         {
             _credential = new NetworkCredential(login, password);
-            _baseUrl = $"ftp://{serverAddress}//Students/E191088/{mainDirectory}";
+            _baseUrl = $"ftp://{login}@{serverAddress}/Students/E191088/{mainDirectory}";
             _sslEnabled = sslEnabled;
         }
 
@@ -45,48 +45,18 @@ namespace StudentLounge_Backend.Models.Files
                 return null;
             }
         }*/
-        /*public async Task<FtpWebResponse> Upload(string toDirectoryPath, IFormFile file)
-        {
-            string uploadUrl = $"{_baseUrl}/{toDirectoryPath}/{file.FileName}";
-            //string uploadUrl = String.Format("ftp://{0}/{1}/{2}", "e191088@ftps.cg.helmo.be", "/Students/E191088/StudentLounge", file.FileName);
-            //string uploadUrl = String.Format("ftp://{0}/{1}/{2}", "e191088@ftps.cg.helmo.be", "/Students/E191088/StudentLounge", file.FileName);
-            var request = CreateRequest(uploadUrl, WebRequestMethods.Ftp.UploadFile);
-            byte[] fileContents = GetFileContents(file);
-            using (Stream requestStream = request.GetRequestStream())
-            {
-                requestStream.Write(fileContents, 0, fileContents.Length);
-            }
-            return (FtpWebResponse) request.GetResponse();
-        }*/
-
-        
         public async Task<FtpWebResponse> Upload(string toDirectoryPath, IFormFile file)
         {
-            string uploadUrl = String.Format("ftp://{0}/{1}/{2}", "e191088@ftps.cg.helmo.be", "Students/E191088/StudentLounge", file.FileName);
+            string uploadUrl = $"{_baseUrl}/{toDirectoryPath}/{file.FileName}";
 
-            var request = (FtpWebRequest)WebRequest.Create(uploadUrl);
-            request.EnableSsl = true;
-            request.Method = WebRequestMethods.Ftp.UploadFile;
-            request.Credentials = new NetworkCredential("e191088", "Q5C7eeEv");
-            byte[] buffer = new byte[1024];
-            var stream = file.OpenReadStream();
-            byte[] fileContents;
-            using (var ms = new MemoryStream())
-            {
-                int read;
-                while ((read = stream.Read(buffer, 0, buffer.Length)) > 0)
-                {
-                    ms.Write(buffer, 0, read);
-                }
-                fileContents = ms.ToArray();
-            }
+            var request = CreateRequest(uploadUrl, WebRequestMethods.Ftp.UploadFile);
+            //byte[] fileContents = GetFileContents(file);
             using (Stream requestStream = request.GetRequestStream())
             {
-
-                requestStream.Write(fileContents, 0, fileContents.Length);
+                file.CopyTo(requestStream);
+                //requestStream.Write(fileContents, 0, fileContents.Length);
             }
-            FtpWebResponse response = (FtpWebResponse)request.GetResponse();
-            return response;
+            return (FtpWebResponse) request.GetResponse();
         }
 
         private byte[] GetFileContents(IFormFile file)
