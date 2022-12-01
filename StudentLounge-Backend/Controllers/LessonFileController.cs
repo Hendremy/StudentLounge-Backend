@@ -14,7 +14,6 @@ using Microsoft.EntityFrameworkCore;
 namespace StudentLounge_Backend.Controllers
 {
     [Route("[controller]")]
-    [Authorize(Roles ="Student")]
     [ApiController]
     public class LessonFileController : SecuredController
     {
@@ -28,6 +27,7 @@ namespace StudentLounge_Backend.Controllers
             _appDbContext = appDbContext;
         }
 
+        [Authorize(Roles = "Student")]
         [HttpPost]
         public async Task<IActionResult> Upload([FromForm] FileUpload fileUpload)
         {
@@ -65,6 +65,7 @@ namespace StudentLounge_Backend.Controllers
             }
         }
 
+        [Authorize(Roles = "Student")]
         [HttpGet("{fileId}")]
         public async Task<IActionResult> Download(string fileId)
         {
@@ -77,6 +78,7 @@ namespace StudentLounge_Backend.Controllers
             return BadRequest("Invalid fileId");
         }
 
+        [Authorize(Roles = "Student")]
         [HttpGet("lesson/{lessonId}")]
         public async Task<ActionResult<IEnumerable<LessonFile>>> GetLessonFiles(string lessonId)
         {
@@ -89,6 +91,18 @@ namespace StudentLounge_Backend.Controllers
                 return Ok(files);
             }
             return BadRequest("Invalid lessonId");
+        }
+
+        [HttpGet("files")]
+        public async Task<ActionResult> GetNbFiles()
+        {
+            var files = _appDbContext.LessonFiles.ToArray();
+            if (files != null)
+            {
+                var nb = files.Length;
+                return Ok(nb);
+            }
+            return BadRequest("Error request");
         }
     }
 }
