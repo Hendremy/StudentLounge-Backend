@@ -11,7 +11,7 @@
         protected string ProviderName { get; init; }
         public IHandleExternalAuth Next { get; set; }
 
-        public async Task<AppUser> HandleAsync(ExternalAuthRequest request)
+        public async virtual Task<AppUser> HandleAsync(ExternalAuthRequest request)
         {
             AppUser user = null;
             if (Next != null)

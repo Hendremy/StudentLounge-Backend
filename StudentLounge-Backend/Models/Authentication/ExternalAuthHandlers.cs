@@ -24,7 +24,7 @@ namespace StudentLounge_Backend.Models.Authentication
             _userRepository = userRepository;
         }
 
-        public async Task<AppUser> HandleAsync(ExternalAuthRequest request)
+        public async override Task<AppUser> HandleAsync(ExternalAuthRequest request)
         {
             if (CanHandleRequest(request))
             {
@@ -63,7 +63,8 @@ namespace StudentLounge_Backend.Models.Authentication
                 Firstname = payload.GivenName,
                 Lastname = payload.FamilyName,
                 Email = payload.Email,
-                Image = payload.Picture
+                Image = payload.Picture,
+                UserName = payload.Email
             };
         }
         
