@@ -1,4 +1,5 @@
 ﻿using Google.Apis.Auth;
+using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Identity;
 
 namespace StudentLounge_Backend.Models.Authentication
@@ -45,8 +46,8 @@ namespace StudentLounge_Backend.Models.Authentication
                 var user = await _userRepository.FindExternalUserAsync(request.ProviderName, userId);
                 if(user == null)
                 {
-                    var newUser = CreateUser(payload);
-                    var createResult = await _userRepository.CreateExternalUserAsync(request.ProviderName, userId, newUser);
+                    user = CreateUser(payload);
+                    var createResult = await _userRepository.CreateExternalUserAsync(request.ProviderName, userId, user);
                 }
                 return user;
             }
@@ -64,7 +65,7 @@ namespace StudentLounge_Backend.Models.Authentication
                 Lastname = payload.FamilyName,
                 Email = payload.Email,
                 Image = payload.Picture,
-                UserName = payload.Email
+                UserName = payload.Subject
             };
         }
         
