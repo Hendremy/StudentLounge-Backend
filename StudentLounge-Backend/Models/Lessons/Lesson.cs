@@ -1,4 +1,5 @@
 ﻿using StudentLounge_Backend.Models.Files;
+using StudentLounge_Backend.Models.Tutorats;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
@@ -17,5 +18,8 @@ namespace StudentLounge_Backend.Models
 
         [JsonIgnore]
         public ICollection<LessonFile> Files { get; set; }
+
+        [JsonIgnore]
+        public ICollection<Tutorat> Tutorats { get; set; }
     }
 }
