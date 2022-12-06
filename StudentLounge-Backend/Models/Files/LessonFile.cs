@@ -32,6 +32,6 @@ namespace StudentLounge_Backend.Models.Files
 
     public enum LessonFileType
     {
-        Summary, Notes
+        Summary = 0, Notes = 1
     }
 }
