@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using StudentLounge_Backend.Models.Files;
 using StudentLounge_Backend.Models;
 using Microsoft.EntityFrameworkCore;
+using StudentLounge_Backend.Models.DTOs;
 
 namespace StudentLounge_Backend.Controllers
 {
@@ -84,13 +85,25 @@ namespace StudentLounge_Backend.Controllers
         {
             var lesson = _appDbContext.Lessons
                 .Include(lesson => lesson.Files)
+                .ThenInclude(file => file.Author)
                 .FirstOrDefault(lesson => lesson.Id == lessonId);
             if(lesson != null)
             {
                 var files = lesson.Files.ToList();
-                return Ok(files);
+                var filesDTO = ConvertFilesToDTO(files);
+                return Ok(filesDTO);
             }
             return BadRequest("Invalid lessonId");
+        }
+
+        private IEnumerable<LessonFileDTO> ConvertFilesToDTO(IEnumerable<LessonFile> files)
+        {
+            IList<LessonFileDTO> filesDTO = new List<LessonFileDTO>();
+            foreach(var file in files)
+            {
+                filesDTO.Add(new LessonFileDTO(file));
+            }
+            return filesDTO;
         }
 
         [HttpGet("files")]
