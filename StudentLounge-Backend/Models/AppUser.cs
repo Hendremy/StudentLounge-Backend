@@ -15,16 +15,16 @@ namespace StudentLounge_Backend.Models
         public string Fullname => $"{Firstname} {Lastname}";
 
         [JsonIgnore]
-        public List<Lesson> Lessons { get; set; } = new List<Lesson>();
+        public virtual List<Lesson> Lessons { get; set; } = new List<Lesson>();
 
         [JsonIgnore]
-        public List<LessonFile> PostedFiles { get; set; } = new List<LessonFile>();
+        public virtual List<LessonFile> PostedFiles { get; set; } = new List<LessonFile>();
 
         [JsonIgnore]
-        public List<Tutorat> TutoratAccepted { get; set; } = new List<Tutorat>();
+        public virtual List<Tutorat> TutoratAccepted { get; set; } = new List<Tutorat>();
 
         [JsonIgnore]
-        public List<Tutorat> TutoratAsked { get; set; } = new List<Tutorat>();
+        public virtual List<Tutorat> TutoratAsked { get; set; } = new List<Tutorat>();
 
     }
 }

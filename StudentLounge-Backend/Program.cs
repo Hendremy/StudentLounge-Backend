@@ -57,6 +57,8 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseSqlServer(config.GetConnectionString("default"));
+    options.EnableSensitiveDataLogging();
+    options.UseLazyLoadingProxies();
 });
 
 builder.Services.AddIdentity<AppUser, IdentityRole>()

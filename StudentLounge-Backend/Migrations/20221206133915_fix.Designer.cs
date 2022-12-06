@@ -12,8 +12,8 @@ using StudentLounge_Backend.Models;
 namespace StudentLounge_Backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20221110152644_Add_Lessons")]
-    partial class Add_Lessons
+    [Migration("20221206133915_fix")]
+    partial class fix
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,6 +23,21 @@ namespace StudentLounge_Backend.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("AppUserLesson", b =>
+                {
+                    b.Property<string>("LessonsId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UsersId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("LessonsId", "UsersId");
+
+                    b.HasIndex("UsersId");
+
+                    b.ToTable("AppUserLesson");
+                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -176,14 +191,14 @@ namespace StudentLounge_Backend.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("FirstName")
+                    b.Property<string>("Firstname")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("LastName")
+                    b.Property<string>("Lastname")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -233,26 +248,116 @@ namespace StudentLounge_Backend.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("StudentLounge_Backend.Models.Lesson", b =>
+            modelBuilder.Entity("StudentLounge_Backend.Models.Files.LessonFile", b =>
                 {
-                    b.Property<int>("id")
+                    b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"), 1L, 1);
-
-                    b.Property<string>("AppUserId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("name")
+                    b.Property<DateTime>("AddedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("AuthorId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("FileName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("id");
+                    b.Property<string>("FilePath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasIndex("AppUserId");
+                    b.Property<string>("LessonId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AuthorId");
+
+                    b.HasIndex("LessonId");
+
+                    b.ToTable("LessonFiles");
+                });
+
+            modelBuilder.Entity("StudentLounge_Backend.Models.Lesson", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
 
                     b.ToTable("Lessons");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "70c02712-6f41-11ed-a1eb-0242ac120002",
+                            Name = "Mathématiques"
+                        },
+                        new
+                        {
+                            Id = "7b4b00ee-6f41-11ed-a1eb-0242ac120002",
+                            Name = "Informatique"
+                        },
+                        new
+                        {
+                            Id = "7b4b0684-6f41-11ed-a1eb-0242ac120002",
+                            Name = "Anglais"
+                        },
+                        new
+                        {
+                            Id = "7b4b053a-6f41-11ed-a1eb-0242ac120002",
+                            Name = "Cybersécurité"
+                        });
+                });
+
+            modelBuilder.Entity("StudentLounge_Backend.Models.Tutorats.Tutorat", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LessonId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("TutorId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LessonId");
+
+                    b.HasIndex("TutorId");
+
+                    b.ToTable("Tutorats");
+                });
+
+            modelBuilder.Entity("AppUserLesson", b =>
+                {
+                    b.HasOne("StudentLounge_Backend.Models.Lesson", null)
+                        .WithMany()
+                        .HasForeignKey("LessonsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("StudentLounge_Backend.Models.AppUser", null)
+                        .WithMany()
+                        .HasForeignKey("UsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -306,16 +411,62 @@ namespace StudentLounge_Backend.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("StudentLounge_Backend.Models.Lesson", b =>
+            modelBuilder.Entity("StudentLounge_Backend.Models.Files.LessonFile", b =>
                 {
-                    b.HasOne("StudentLounge_Backend.Models.AppUser", null)
-                        .WithMany("Lessons")
-                        .HasForeignKey("AppUserId");
+                    b.HasOne("StudentLounge_Backend.Models.AppUser", "Author")
+                        .WithMany("PostedFiles")
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("StudentLounge_Backend.Models.Lesson", "Lesson")
+                        .WithMany("Files")
+                        .HasForeignKey("LessonId");
+
+                    b.Navigation("Author");
+
+                    b.Navigation("Lesson");
+                });
+
+            modelBuilder.Entity("StudentLounge_Backend.Models.Tutorats.Tutorat", b =>
+                {
+                    b.HasOne("StudentLounge_Backend.Models.AppUser", "Tutored")
+                        .WithMany("TutoratAsked")
+                        .HasForeignKey("Id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("StudentLounge_Backend.Models.Lesson", "Lesson")
+                        .WithMany("Tutorats")
+                        .HasForeignKey("LessonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("StudentLounge_Backend.Models.AppUser", "Tutor")
+                        .WithMany("TutoratAccepted")
+                        .HasForeignKey("TutorId");
+
+                    b.Navigation("Lesson");
+
+                    b.Navigation("Tutor");
+
+                    b.Navigation("Tutored");
                 });
 
             modelBuilder.Entity("StudentLounge_Backend.Models.AppUser", b =>
                 {
-                    b.Navigation("Lessons");
+                    b.Navigation("PostedFiles");
+
+                    b.Navigation("TutoratAccepted");
+
+                    b.Navigation("TutoratAsked");
+                });
+
+            modelBuilder.Entity("StudentLounge_Backend.Models.Lesson", b =>
+                {
+                    b.Navigation("Files");
+
+                    b.Navigation("Tutorats");
                 });
 #pragma warning restore 612, 618
         }

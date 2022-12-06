@@ -9,7 +9,7 @@ namespace StudentLounge_Backend.Models.Authentication.Seed
             IdentityRole role = roleManager.FindByIdAsync("1").Result;
             if (role == null)
             {
-                var add = roleManager.CreateAsync(new IdentityRole("Admin")).Result;
+                var add = roleManager.CreateAsync(new IdentityRole("Admin")).Result;    
                 add = roleManager.CreateAsync(new IdentityRole("Student")).Result;
             }
         }

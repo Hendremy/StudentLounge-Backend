@@ -14,12 +14,12 @@ namespace StudentLounge_Backend.Models
         public string Name { get; set; }
 
         [JsonIgnore]
-        public ICollection<AppUser> Users { get; set; }
+        public virtual ICollection<AppUser> Users { get; set; }
 
         [JsonIgnore]
-        public ICollection<LessonFile> Files { get; set; }
+        public virtual ICollection<LessonFile> Files { get; set; }
 
         [JsonIgnore]
-        public ICollection<Tutorat> Tutorats { get; set; }
+        public virtual ICollection<Tutorat> Tutorats { get; set; }
     }
 }

@@ -3,7 +3,6 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StudentLounge_Backend.Models;
 
@@ -12,10 +11,9 @@ using StudentLounge_Backend.Models;
 namespace StudentLounge_Backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20221205080331_Add_Tutorat")]
-    partial class Add_Tutorat
+    partial class AppDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -324,7 +322,6 @@ namespace StudentLounge_Backend.Migrations
             modelBuilder.Entity("StudentLounge_Backend.Models.Tutorats.Tutorat", b =>
                 {
                     b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("Date")
@@ -335,7 +332,6 @@ namespace StudentLounge_Backend.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("TutorId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -446,9 +442,7 @@ namespace StudentLounge_Backend.Migrations
 
                     b.HasOne("StudentLounge_Backend.Models.AppUser", "Tutor")
                         .WithMany("TutoratAccepted")
-                        .HasForeignKey("TutorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("TutorId");
 
                     b.Navigation("Lesson");
 
