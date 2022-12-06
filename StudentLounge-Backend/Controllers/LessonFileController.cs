@@ -81,7 +81,7 @@ namespace StudentLounge_Backend.Controllers
 
         [Authorize(Roles = "Student")]
         [HttpGet("lesson/{lessonId}")]
-        public async Task<ActionResult<IEnumerable<LessonFile>>> GetLessonFiles(string lessonId)
+        public async Task<ActionResult<IEnumerable<LessonFileDTO>>> GetLessonFiles(string lessonId)
         {
             var lesson = _appDbContext.Lessons
                 .Include(lesson => lesson.Files)
