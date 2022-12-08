@@ -10,7 +10,7 @@ namespace StudentLounge_Backend.Models
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) {}
 
-        public DbSet<Tutoring> Tutorats { get; set; }
+        public DbSet<Tutoring> Tutorings { get; set; }
 
         public DbSet<Lesson> Lessons { get; set; }
 
@@ -25,12 +25,12 @@ namespace StudentLounge_Backend.Models
             LessonsSeed.Generate(modelBuilder);
 
             modelBuilder.Entity<Tutoring>().HasOne(t => t.Tutor)
-                .WithMany(u => u.TutoratAccepted)
+                .WithMany(u => u.AcceptedTutorings)
                 .HasForeignKey(t => t.TutorId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Tutoring>().HasOne(t => t.Tutored)
-                .WithMany(u => u.TutoratAsked)
+                .WithMany(u => u.TutoringRequests)
                 .HasForeignKey(t => t.TutoredId)
                 .OnDelete(DeleteBehavior.NoAction);
         }

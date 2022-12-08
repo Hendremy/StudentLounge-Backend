@@ -34,7 +34,7 @@ namespace StudentLounge_Backend.Controllers
 
                     //_context.Tutorats.Add(tutorat);
                     //lesson.Tutorats.Add(tutorat);
-                    user.TutoratAsked.Add(tutorat);
+                    user.TutoringRequests.Add(tutorat);
 
                     await _context.SaveChangesAsync();
                     return Ok(new TutoringDTO(tutorat));
@@ -55,8 +55,10 @@ namespace StudentLounge_Backend.Controllers
             {
                 try
                 {
-                    var user = _context.AppUsers.Where(user => user.Id == userId).Include(u => u.TutoratAccepted).First();
-                    var tutorat = _context.Tutorats.Where(tutorat => tutorat.Id == tutoratId).First();
+                    var user = _context.AppUsers.Where(user => user.Id == userId).Include(u => u.AcceptedTutorings).First();
+                    var tutorat = _context.Tutorings
+                        .Where(tutoring => tutoring.Id == tutoratId && tutoring.TutoredId != userId)
+                        .First();
 
                     tutorat.Tutor = user;
 
@@ -76,11 +78,16 @@ namespace StudentLounge_Backend.Controllers
         {
             try
             {
-                var lesson = _context.Lessons.Where(lesson => lesson.Id == lessonId).First();
-                var tutorings = _context.Tutorats
+                string userId = GetUserId();
+                var lesson = _context.Lessons
+                    .Where(lesson => lesson.Id == lessonId)
+                    .First();
+                var tutorings = _context.Tutorings
                     .Include(tutoring => tutoring.Tutor)
                     .Include(tutoring => tutoring.Tutored)
-                    .Where(tutoring => tutoring.Lesson == lesson && tutoring.Tutor == null)
+                    .Where(tutoring => tutoring.Lesson == lesson 
+                                       && tutoring.Tutored.Id != userId
+                                       && tutoring.Tutor == null)
                     .Select(tutoring => new TutoringDTO(tutoring));
 
                 return Ok(tutorings);
