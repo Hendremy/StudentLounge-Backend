@@ -69,10 +69,13 @@ namespace StudentLounge_Backend.Controllers
         [HttpGet("{fileId}")]
         public async Task<IActionResult> Download(string fileId)
         {
-            var file = _appDbContext.LessonFiles.FirstOrDefault(file => file.Id == fileId);
+            var file = _appDbContext.LessonFiles
+                .Include(file => file.Lesson)
+                .FirstOrDefault(file => file.Id == fileId);
             if (file != null)
             {
-                var stream = _transferFiles.GetDownloadStream(file.FileName);
+                var path = $"Lessons/{file.Lesson.Id}/{file.FileName}";
+                var stream = _transferFiles.GetDownloadStream(path);
                 return stream != null ? File(stream, "application/pdf", file.FileName) : StatusCode(500, "Download failed");
             }
             return BadRequest("Invalid fileId");
