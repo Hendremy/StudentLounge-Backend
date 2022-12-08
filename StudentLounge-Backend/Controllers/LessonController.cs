@@ -109,7 +109,7 @@ namespace StudentLounge_Backend.Controllers
                 lesson.Users.Add(user);
                 user.Lessons.Add(lesson);
 
-                await _context.SaveChangesAsync();
+                var res = await _context.SaveChangesAsync();
 
                 return Ok(lesson);
             }
@@ -127,7 +127,7 @@ namespace StudentLounge_Backend.Controllers
                 lesson.Users.Remove(user);
                 user.Lessons.Remove(lesson);
 
-                await _context.SaveChangesAsync();
+                var res = await _context.SaveChangesAsync();
 
                 return Ok(lesson);
             }
