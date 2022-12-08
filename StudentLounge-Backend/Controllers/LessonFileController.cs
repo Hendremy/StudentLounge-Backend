@@ -41,7 +41,7 @@ namespace StudentLounge_Backend.Controllers
                 var response = await _transferFiles.Upload(directoryPath, fileUpload.File);
                 if (response != null && RegisterFileUpload(userId, directoryPath, lesson, fileUpload))
                 {
-                    return Ok("Upload successful");
+                    return Ok();
                 }
                 return StatusCode(500, "Upload failed");
             }
