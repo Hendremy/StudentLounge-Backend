@@ -19,7 +19,7 @@ namespace StudentLounge_Backend.Controllers
             _context= context;
         }
 
-        [HttpPut("{lessonId}")]
+        [HttpPut("lesson/{lessonId}")]
         public async Task<ActionResult<Tutorat>> AskTutorat(string lessonId)
         {
             string userId = GetUserId();
@@ -46,7 +46,7 @@ namespace StudentLounge_Backend.Controllers
             return Unauthorized();
         }
 
-        [HttpPost("{tutoratId}")]
+        [HttpPut("{tutoratId}")]
         public async Task<ActionResult<Tutorat>> AcceptTutorat(int tutoratId)
         {
             string userId = GetUserId();
@@ -70,7 +70,7 @@ namespace StudentLounge_Backend.Controllers
             return Unauthorized();
         }
 
-        [HttpPost("all/{lessonId}")]
+        [HttpGet("lesson/{lessonId}")]
         public async Task<ActionResult<Tutorat>> GetTutorats(string lessonId)
         {
             try
