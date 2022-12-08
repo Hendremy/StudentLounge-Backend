@@ -20,6 +20,6 @@ namespace StudentLounge_Backend.Models
         public virtual ICollection<LessonFile> Files { get; set; }
 
         [JsonIgnore]
-        public virtual ICollection<Tutorat> Tutorats { get; set; }
+        public virtual ICollection<Tutoring> Tutorats { get; set; }
     }
 }

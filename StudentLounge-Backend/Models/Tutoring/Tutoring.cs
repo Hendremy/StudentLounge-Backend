@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace StudentLounge_Backend.Models.Tutorats
 {
-    public class Tutorat
+    public class Tutoring
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -19,9 +19,9 @@ namespace StudentLounge_Backend.Models.Tutorats
 
         public virtual Lesson Lesson { get; set; }
 
-        public Tutorat() { }
+        public Tutoring() { }
 
-        public Tutorat(AppUser tutored, Lesson lesson)
+        public Tutoring(AppUser tutored, Lesson lesson)
         {
             Date = DateTime.Now;
             Tutor = null;
