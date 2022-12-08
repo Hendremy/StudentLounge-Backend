@@ -26,12 +26,12 @@ namespace StudentLounge_Backend.Models
 
             modelBuilder.Entity<Tutorat>().HasOne(t => t.Tutor)
                 .WithMany(u => u.TutoratAccepted)
-                .HasForeignKey(t => t.Id)
+                .HasForeignKey(t => t.TutorId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Tutorat>().HasOne(t => t.Tutored)
                 .WithMany(u => u.TutoratAsked)
-                .HasForeignKey(t => t.Id)
+                .HasForeignKey(t => t.TutoredId)
                 .OnDelete(DeleteBehavior.NoAction);
         }
     }

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace StudentLounge_Backend.Migrations
 {
-    public partial class fix : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -225,17 +225,19 @@ namespace StudentLounge_Backend.Migrations
                 name: "Tutorats",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    TutorId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    TutorId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    TutoredId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     LessonId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Tutorats", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Tutorats_AspNetUsers_Id",
-                        column: x => x.Id,
+                        name: "FK_Tutorats_AspNetUsers_TutoredId",
+                        column: x => x.TutoredId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
@@ -320,6 +322,11 @@ namespace StudentLounge_Backend.Migrations
                 name: "IX_Tutorats_LessonId",
                 table: "Tutorats",
                 column: "LessonId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tutorats_TutoredId",
+                table: "Tutorats",
+                column: "TutoredId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tutorats_TutorId",

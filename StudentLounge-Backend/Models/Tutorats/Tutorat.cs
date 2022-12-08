@@ -8,12 +8,13 @@ namespace StudentLounge_Backend.Models.Tutorats
     public class Tutorat
     {
         [Key]
-        //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public string Id { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
 
         public DateTime Date { get; set; }
-
+        public string? TutorId { get; set; }
         public virtual AppUser? Tutor { get; set; }
+        public string TutoredId { get; set; }
         public virtual AppUser Tutored { get; set; }
 
         public virtual Lesson Lesson { get; set; }

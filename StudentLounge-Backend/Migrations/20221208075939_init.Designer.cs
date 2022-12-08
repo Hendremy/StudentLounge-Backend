@@ -12,8 +12,8 @@ using StudentLounge_Backend.Models;
 namespace StudentLounge_Backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20221206133915_fix")]
-    partial class fix
+    [Migration("20221208075939_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -323,8 +323,11 @@ namespace StudentLounge_Backend.Migrations
 
             modelBuilder.Entity("StudentLounge_Backend.Models.Tutorats.Tutorat", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
@@ -334,6 +337,11 @@ namespace StudentLounge_Backend.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("TutorId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("TutoredId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -341,6 +349,8 @@ namespace StudentLounge_Backend.Migrations
                     b.HasIndex("LessonId");
 
                     b.HasIndex("TutorId");
+
+                    b.HasIndex("TutoredId");
 
                     b.ToTable("Tutorats");
                 });
@@ -430,12 +440,6 @@ namespace StudentLounge_Backend.Migrations
 
             modelBuilder.Entity("StudentLounge_Backend.Models.Tutorats.Tutorat", b =>
                 {
-                    b.HasOne("StudentLounge_Backend.Models.AppUser", "Tutored")
-                        .WithMany("TutoratAsked")
-                        .HasForeignKey("Id")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("StudentLounge_Backend.Models.Lesson", "Lesson")
                         .WithMany("Tutorats")
                         .HasForeignKey("LessonId")
@@ -444,7 +448,15 @@ namespace StudentLounge_Backend.Migrations
 
                     b.HasOne("StudentLounge_Backend.Models.AppUser", "Tutor")
                         .WithMany("TutoratAccepted")
-                        .HasForeignKey("TutorId");
+                        .HasForeignKey("TutorId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("StudentLounge_Backend.Models.AppUser", "Tutored")
+                        .WithMany("TutoratAsked")
+                        .HasForeignKey("TutoredId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.Navigation("Lesson");
 

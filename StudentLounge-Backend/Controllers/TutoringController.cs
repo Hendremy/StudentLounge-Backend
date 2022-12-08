@@ -29,13 +29,12 @@ namespace StudentLounge_Backend.Controllers
                 {
                     var lesson = _context.Lessons.Where(lesson => lesson.Id == lessonId).First();
                     var user = _context.AppUsers.Where(user => user.Id == userId).First();
-                    var tutorat = new Tutorat() {Lesson = lesson, Date = DateTime.Now, Tutored = user };
+                    var tutorat = new Tutorat() {Lesson = lesson, Date = DateTime.Now, Tutored = user, TutoredId = userId};
 
                     //_context.Tutorats.Add(tutorat);
-                    lesson.Tutorats.Add(tutorat);
-                    //user.TutoratAsked.Add(tutorat);
+                    //lesson.Tutorats.Add(tutorat);
+                    user.TutoratAsked.Add(tutorat);
 
-                    _context.Update(lesson);
                     await _context.SaveChangesAsync();
                     return Ok(tutorat);
                 }
@@ -48,7 +47,7 @@ namespace StudentLounge_Backend.Controllers
         }
 
         [HttpPost("{tutoratId}")]
-        public async Task<ActionResult<Tutorat>> AcceptTutorat(string tutoratId)
+        public async Task<ActionResult<Tutorat>> AcceptTutorat(int tutoratId)
         {
             string userId = GetUserId();
             if (UserIdIsValid(userId))

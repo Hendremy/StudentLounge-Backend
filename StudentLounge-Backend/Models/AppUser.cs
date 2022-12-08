@@ -21,10 +21,10 @@ namespace StudentLounge_Backend.Models
         public virtual List<LessonFile> PostedFiles { get; set; } = new List<LessonFile>();
 
         [JsonIgnore]
-        public virtual List<Tutorat> TutoratAccepted { get; set; } = new List<Tutorat>();
+        public virtual ICollection<Tutorat> TutoratAccepted { get; set; } = new List<Tutorat>();
 
         [JsonIgnore]
-        public virtual List<Tutorat> TutoratAsked { get; set; } = new List<Tutorat>();
+        public virtual ICollection<Tutorat> TutoratAsked { get; set; } = new List<Tutorat>();
 
     }
 }
