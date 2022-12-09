@@ -17,9 +17,9 @@ namespace StudentLounge_Backend.Models
         public virtual ICollection<AppUser> Users { get; set; }
 
         [JsonIgnore]
-        public virtual ICollection<LessonFile> Files { get; set; }
+        public virtual ICollection<LessonFile> Files { get; set; } = new List<LessonFile>();
 
         [JsonIgnore]
-        public virtual ICollection<Tutoring> Tutorats { get; set; }
+        public virtual ICollection<Tutoring> Tutorats { get; set; } = new List<Tutoring>();
     }
 }

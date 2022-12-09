@@ -59,18 +59,6 @@ namespace StudentLounge_Backend.Models.Files
             return (FtpWebResponse) request.GetResponse();
         }
 
-        private byte[] GetFileContents(IFormFile file)
-        {
-            byte[] fileContents;
-            using (var stream = file.OpenReadStream()) { 
-                using (var ms = new MemoryStream())
-                {
-                    fileContents = WriteToMemoryStream(stream, ms);
-                }
-            }
-            return fileContents;
-        }
-
         private byte[] WriteToMemoryStream(Stream from, MemoryStream to)
         {
             int read;
@@ -80,18 +68,6 @@ namespace StudentLounge_Backend.Models.Files
                 to.Write(buffer, 0, read);
             }
             return to.ToArray();
-        }
-
-        private async Task<FtpWebResponse> CopyFileToServer(IFormFile file, FtpWebRequest request)
-        {
-            using(var fileStream = file.OpenReadStream())
-            {
-                using(var serverStream = request.GetRequestStream())
-                {
-                    fileStream.CopyTo(serverStream);
-                }
-            }
-            return (FtpWebResponse)request.GetResponse();
         }
 
         private FtpWebRequest CreateRequest(string url, string method)
