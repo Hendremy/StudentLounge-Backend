@@ -33,6 +33,7 @@ namespace StudentLounge_Backend.Models
                 .WithMany(u => u.TutoringRequests)
                 .HasForeignKey(t => t.TutoredId)
                 .OnDelete(DeleteBehavior.NoAction);
+                
         }
     }
 }

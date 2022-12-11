@@ -25,6 +25,5 @@ namespace StudentLounge_Backend.Models
 
         [JsonIgnore]
         public virtual ICollection<Tutoring> TutoringRequests { get; set; } = new List<Tutoring>();
-
     }
 }

@@ -34,7 +34,7 @@ namespace StudentLounge_Backend.Migrations
 
                     b.HasIndex("UsersId");
 
-                    b.ToTable("AppUserLesson");
+                    b.ToTable("AppUserLesson", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -279,7 +279,7 @@ namespace StudentLounge_Backend.Migrations
 
                     b.HasIndex("LessonId");
 
-                    b.ToTable("LessonFiles");
+                    b.ToTable("LessonFiles", (string)null);
                 });
 
             modelBuilder.Entity("StudentLounge_Backend.Models.Lesson", b =>
@@ -294,7 +294,7 @@ namespace StudentLounge_Backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Lessons");
+                    b.ToTable("Lessons", (string)null);
 
                     b.HasData(
                         new
@@ -349,7 +349,7 @@ namespace StudentLounge_Backend.Migrations
 
                     b.HasIndex("TutoredId");
 
-                    b.ToTable("Tutorings");
+                    b.ToTable("Tutorings", (string)null);
                 });
 
             modelBuilder.Entity("AppUserLesson", b =>

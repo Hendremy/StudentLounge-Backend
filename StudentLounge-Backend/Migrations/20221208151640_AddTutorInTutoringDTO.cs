@@ -9,9 +9,6 @@ namespace StudentLounge_Backend.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Tutorats");
-
             migrationBuilder.CreateTable(
                 name: "Tutorings",
                 columns: table => new

@@ -59,7 +59,6 @@ namespace StudentLounge_Backend.Controllers
                     var tutorat = _context.Tutorings
                         .Where(tutoring => tutoring.Id == tutoratId && tutoring.TutoredId != userId)
                         .First();
-
                     tutorat.Tutor = user;
 
                     await _context.SaveChangesAsync();
@@ -89,6 +88,27 @@ namespace StudentLounge_Backend.Controllers
                                        && tutoring.Tutored.Id != userId
                                        && tutoring.Tutor == null)
                     .Select(tutoring => new TutoringDTO(tutoring));
+
+                return Ok(tutorings);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return NotFound(ex);
+            }
+        }
+
+        [HttpGet("chat/")]
+        public async Task<ActionResult<IEnumerable<DiscussionDTO>>> GetDiscussions()
+        {
+            try
+            {
+                string userId = GetUserId();
+                var tutorings = _context.Tutorings
+                    .Include(tutoring => tutoring.Tutor)
+                    .Include(tutoring => tutoring.Tutored)
+                    .Where(tutoring => tutoring.Tutor != null && (tutoring.Tutored.Id == userId
+                                       || tutoring.Tutor.Id == userId))
+                    .Select(tutoring => new DiscussionDTO(tutoring));
 
                 return Ok(tutorings);
             }
