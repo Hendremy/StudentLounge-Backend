@@ -108,6 +108,8 @@ builder.Services.AddScoped<ITransferFiles, FtpClient>(services =>
 });
 
 builder.Services.AddScoped<IParseCalendar, CalendarParser>();
+builder.Services.AddScoped<ICreateAgendas, AgendaFactory>();
+
 
 var url = "authorizePorthos";
 builder.Services.AddCors(options =>

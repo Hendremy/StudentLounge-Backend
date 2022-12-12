@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using StudentLounge_Backend.Models;
 using System.Security.Claims;
 
 namespace StudentLounge_Backend.Controllers

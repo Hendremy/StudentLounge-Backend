@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using StudentLounge_Backend.Models;
 using StudentLounge_Backend.Models.Agendas;
 
@@ -10,15 +11,17 @@ namespace StudentLounge_Backend.Controllers
     [Route("[controller]")]
     [Authorize(Roles="Student")]
     [ApiController]
-    public class AgendaController : ControllerBase
+    public class AgendaController : SecuredController
     {
         private readonly IParseCalendar _calendarParser;
+        private readonly ICreateAgendas _createAgendas;
         private readonly AppDbContext _appDbContext;
 
-        public AgendaController([FromServices]IParseCalendar calendarParser, AppDbContext appDbContext)
+        public AgendaController([FromServices] AppDbContext appDbContext, IParseCalendar calendarParser, ICreateAgendas createAgendas)
         {
             _calendarParser = calendarParser;
             _appDbContext = appDbContext;
+            _createAgendas = createAgendas;
         }
 
         [HttpPost]
@@ -26,16 +29,17 @@ namespace StudentLounge_Backend.Controllers
         {
             try
             {
-                var calendar = import.CalendarFile;
-                if (calendar.FileName.EndsWith(".ics"))
+                var calendarFile = import.CalendarFile;
+                if (calendarFile.FileName.EndsWith(".ics"))
                 {
-                    CalendarCollection? calendars = null;
-                    using (var stream = calendar.OpenReadStream())
+                    var user = _appDbContext.AppUsers.FirstOrDefault(u => u.Id == GetUserId());
+                    if(user != null)
                     {
-                        calendars = _calendarParser.ParseFile(calendar);
-
+                        var calendars = _calendarParser.ParseFile(calendarFile);
+                        user.Agendas = _createAgendas.FromCalendarCollection(calendars);
+                        _appDbContext.SaveChanges();
+                        return Ok(user.Agendas);
                     }
-                    return Ok(calendars);
                 }
                 return BadRequest();
             }
@@ -46,9 +50,17 @@ namespace StudentLounge_Backend.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> GetSchedule()
+        public async Task<ActionResult> GetUserAgendas()
         {
-            return Ok();
+            var user = _appDbContext.AppUsers
+                .Include(user => user.Agendas)
+                .ThenInclude(agendas => agendas.AgendaEvents)
+                .FirstOrDefault(u => u.Id == GetUserId());
+            if(user != null)
+            {
+                return Ok(user.Agendas);
+            }
+            return BadRequest();
         }
 
         [HttpPut]
@@ -58,7 +70,7 @@ namespace StudentLounge_Backend.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> GetAppointments()
+        public async Task<ActionResult> GetUserAppointments()
         {
             return Ok();
         }

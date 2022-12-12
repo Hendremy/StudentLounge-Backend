@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StudentLounge_Backend.Models;
 
@@ -11,9 +12,10 @@ using StudentLounge_Backend.Models;
 namespace StudentLounge_Backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221212152038_RestoreAgendaEventId")]
+    partial class RestoreAgendaEventId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -178,13 +180,12 @@ namespace StudentLounge_Backend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
+                    b.Property<string>("AppUserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("AppUserId");
 
                     b.ToTable("Agenda");
                 });
@@ -199,6 +200,9 @@ namespace StudentLounge_Backend.Migrations
 
                     b.Property<string>("Color")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("EndHour")
                         .HasColumnType("datetime2");
@@ -471,13 +475,9 @@ namespace StudentLounge_Backend.Migrations
 
             modelBuilder.Entity("StudentLounge_Backend.Models.Agendas.Agenda", b =>
                 {
-                    b.HasOne("StudentLounge_Backend.Models.AppUser", "User")
+                    b.HasOne("StudentLounge_Backend.Models.AppUser", null)
                         .WithMany("Agendas")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
+                        .HasForeignKey("AppUserId");
                 });
 
             modelBuilder.Entity("StudentLounge_Backend.Models.Agendas.AgendaEvent", b =>
