@@ -1,5 +1,6 @@
 ﻿using Ical.Net;
 using Microsoft.AspNetCore.Identity;
+using StudentLounge_Backend.Models.Agendas;
 using StudentLounge_Backend.Models.Files;
 using StudentLounge_Backend.Models.Tutorats;
 using System.Text.Json.Serialization;
@@ -15,7 +16,7 @@ namespace StudentLounge_Backend.Models
 
         public string Fullname => $"{Firstname} {Lastname}";
 
-        public CalendarCollection? Calendar { get; set; } 
+        public Agenda? Agenda { get; set; } 
 
         [JsonIgnore]
         public virtual List<Lesson> Lessons { get; set; } = new List<Lesson>();

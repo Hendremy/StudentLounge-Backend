@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using StudentLounge_Backend.Models.Files;
 using StudentLounge_Backend.Models.Tutorats;
 using StudentLounge_Backend.Models.Lessons.Seed;
-using Ical.Net;
 
 namespace StudentLounge_Backend.Models
 {
@@ -16,8 +15,6 @@ namespace StudentLounge_Backend.Models
         public DbSet<Lesson> Lessons { get; set; }
 
         public DbSet<LessonFile> LessonFiles { get; set; }
-
-        public DbSet<CalendarCollection> Calendars { get; set; }
 
         public DbSet<AppUser> AppUsers { get; set; }
 
@@ -36,7 +33,6 @@ namespace StudentLounge_Backend.Models
                 .WithMany(u => u.TutoringRequests)
                 .HasForeignKey(t => t.TutoredId)
                 .OnDelete(DeleteBehavior.NoAction);
-                
         }
     }
 }

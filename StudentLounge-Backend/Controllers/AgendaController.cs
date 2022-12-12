@@ -3,26 +3,26 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using StudentLounge_Backend.Models;
-using StudentLounge_Backend.Models.Calendar;
+using StudentLounge_Backend.Models.Agendas;
 
 namespace StudentLounge_Backend.Controllers
 {
     [Route("[controller]")]
     [Authorize(Roles="Student")]
     [ApiController]
-    public class CalendarController : ControllerBase
+    public class AgendaController : ControllerBase
     {
         private readonly IParseCalendar _calendarParser;
         private readonly AppDbContext _appDbContext;
 
-        public CalendarController([FromServices]IParseCalendar calendarParser, AppDbContext appDbContext)
+        public AgendaController([FromServices]IParseCalendar calendarParser, AppDbContext appDbContext)
         {
             _calendarParser = calendarParser;
             _appDbContext = appDbContext;
         }
 
         [HttpPost]
-        public async Task<ActionResult> ImportCalendar(CalendarImport import)
+        public async Task<ActionResult> ImportCalendar(AgendaImport import)
         {
             try
             {

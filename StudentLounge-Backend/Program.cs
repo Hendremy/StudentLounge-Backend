@@ -12,7 +12,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.OpenApi.Models;
 using Microsoft.Net.Http.Headers;
 using StudentLounge_Backend.Models.Files;
-using StudentLounge_Backend.Models.Calendar;
+using StudentLounge_Backend.Models.Agendas;
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;

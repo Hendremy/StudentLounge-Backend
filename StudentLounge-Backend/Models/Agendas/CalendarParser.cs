@@ -1,6 +1,6 @@
 ﻿using Ical.Net;
 
-namespace StudentLounge_Backend.Models.Calendar
+namespace StudentLounge_Backend.Models.Agendas
 {
     public class CalendarParser : IParseCalendar
     {

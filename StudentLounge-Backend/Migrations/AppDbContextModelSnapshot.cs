@@ -34,7 +34,7 @@ namespace StudentLounge_Backend.Migrations
 
                     b.HasIndex("UsersId");
 
-                    b.ToTable("AppUserLesson", (string)null);
+                    b.ToTable("AppUserLesson");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -170,12 +170,46 @@ namespace StudentLounge_Backend.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("StudentLounge_Backend.Models.Agendas.Agenda", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Agenda");
+                });
+
+            modelBuilder.Entity("StudentLounge_Backend.Models.Agendas.AgendaEvent", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int?>("AgendaId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AgendaId");
+
+                    b.ToTable("AgendaEvent");
+                });
+
             modelBuilder.Entity("StudentLounge_Backend.Models.AppUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("AgendaId")
                         .HasColumnType("int");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -235,6 +269,8 @@ namespace StudentLounge_Backend.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AgendaId");
+
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
@@ -279,7 +315,7 @@ namespace StudentLounge_Backend.Migrations
 
                     b.HasIndex("LessonId");
 
-                    b.ToTable("LessonFiles", (string)null);
+                    b.ToTable("LessonFiles");
                 });
 
             modelBuilder.Entity("StudentLounge_Backend.Models.Lesson", b =>
@@ -294,7 +330,7 @@ namespace StudentLounge_Backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Lessons", (string)null);
+                    b.ToTable("Lessons");
 
                     b.HasData(
                         new
@@ -349,7 +385,7 @@ namespace StudentLounge_Backend.Migrations
 
                     b.HasIndex("TutoredId");
 
-                    b.ToTable("Tutorings", (string)null);
+                    b.ToTable("Tutorings");
                 });
 
             modelBuilder.Entity("AppUserLesson", b =>
@@ -418,6 +454,22 @@ namespace StudentLounge_Backend.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("StudentLounge_Backend.Models.Agendas.AgendaEvent", b =>
+                {
+                    b.HasOne("StudentLounge_Backend.Models.Agendas.Agenda", null)
+                        .WithMany("AgendaEvents")
+                        .HasForeignKey("AgendaId");
+                });
+
+            modelBuilder.Entity("StudentLounge_Backend.Models.AppUser", b =>
+                {
+                    b.HasOne("StudentLounge_Backend.Models.Agendas.Agenda", "Agenda")
+                        .WithMany()
+                        .HasForeignKey("AgendaId");
+
+                    b.Navigation("Agenda");
+                });
+
             modelBuilder.Entity("StudentLounge_Backend.Models.Files.LessonFile", b =>
                 {
                     b.HasOne("StudentLounge_Backend.Models.AppUser", "Author")
@@ -459,6 +511,11 @@ namespace StudentLounge_Backend.Migrations
                     b.Navigation("Tutor");
 
                     b.Navigation("Tutored");
+                });
+
+            modelBuilder.Entity("StudentLounge_Backend.Models.Agendas.Agenda", b =>
+                {
+                    b.Navigation("AgendaEvents");
                 });
 
             modelBuilder.Entity("StudentLounge_Backend.Models.AppUser", b =>
