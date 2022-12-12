@@ -12,6 +12,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.OpenApi.Models;
 using Microsoft.Net.Http.Headers;
 using StudentLounge_Backend.Models.Files;
+using StudentLounge_Backend.Models.Calendar;
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
@@ -105,6 +106,8 @@ builder.Services.AddScoped<ITransferFiles, FtpClient>(services =>
 {
     return new FtpClient(config["FTP:Server"],config["FTP:MainDirectory"],config["FTP:Login"],config["FTP:Password"], true);
 });
+
+builder.Services.AddScoped<IParseCalendar, CalendarParser>();
 
 var url = "authorizePorthos";
 builder.Services.AddCors(options =>
