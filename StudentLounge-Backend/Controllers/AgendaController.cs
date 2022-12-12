@@ -25,17 +25,20 @@ namespace StudentLounge_Backend.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> ImportCalendar(AgendaImport import)
+        public async Task<ActionResult> ImportCalendar([FromForm] AgendaImport import)
         {
             try
             {
                 var calendarFile = import.CalendarFile;
                 if (calendarFile.FileName.EndsWith(".ics"))
                 {
-                    var user = _appDbContext.AppUsers.FirstOrDefault(u => u.Id == GetUserId());
+                    var user = _appDbContext.AppUsers
+                        .Include(user => user.Agendas)
+                        .FirstOrDefault(u => u.Id == GetUserId());
                     if(user != null)
                     {
                         var calendars = _calendarParser.ParseFile(calendarFile);
+                        //TODO: permettre d'écraser les agendas existants
                         user.Agendas = _createAgendas.FromCalendarCollection(calendars);
                         _appDbContext.SaveChanges();
                         return Ok(user.Agendas);
@@ -61,18 +64,6 @@ namespace StudentLounge_Backend.Controllers
                 return Ok(user.Agendas);
             }
             return BadRequest();
-        }
-
-        [HttpPut]
-        public async Task<ActionResult> MakeAppointment()
-        {
-            return Ok();
-        }
-
-        [HttpGet]
-        public async Task<ActionResult> GetUserAppointments()
-        {
-            return Ok();
         }
     }
 }

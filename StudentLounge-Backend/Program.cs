@@ -139,6 +139,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 app.UseCors(url);
 app.UseHttpsRedirection();
 
