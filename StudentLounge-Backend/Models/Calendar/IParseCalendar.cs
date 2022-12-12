@@ -4,6 +4,6 @@ namespace StudentLounge_Backend.Models.Calendar
 {
     public interface IParseCalendar
     {
-        public CalendarCollection ParseFromStream(Stream stream);
+        public CalendarCollection ParseFile(IFormFile file);
     }
 }

@@ -5,7 +5,7 @@ namespace StudentLounge_Backend.Models.Calendar
     public class Appointment
     {
 
-        public CalendarEvent CalendarEvent { get; set; }
+        public CalendarEvent Details { get; set; }
 
         public List<AppUser> Users { get; set; }
 

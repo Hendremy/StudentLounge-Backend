@@ -29,10 +29,11 @@ namespace StudentLounge_Backend.Controllers
                 var calendar = import.CalendarFile;
                 if (calendar.FileName.EndsWith(".ics"))
                 {
-                    CalendarCollection calendars = null;
+                    CalendarCollection? calendars = null;
                     using (var stream = calendar.OpenReadStream())
                     {
-                        calendars = _calendarParser.ParseFromStream(stream);
+                        calendars = _calendarParser.ParseFile(calendar);
+
                     }
                     return Ok(calendars);
                 }

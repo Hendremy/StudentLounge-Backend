@@ -4,15 +4,9 @@ namespace StudentLounge_Backend.Models.Calendar
 {
     public class CalendarParser : IParseCalendar
     {
-        public CalendarCollection ParseFromStream(Stream textStream)
+        public CalendarCollection ParseFile(IFormFile file)
         {
-            string calendarText = ParseAllText(textStream);
-            return CalendarCollection.Load(calendarText);
-        }
-
-        private string ParseAllText(Stream stream)
-        {
-            return "";
+            return CalendarCollection.Load(file.OpenReadStream());
         }
     }
 }
