@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StudentLounge_Backend.Models;
 
@@ -11,9 +12,10 @@ using StudentLounge_Backend.Models;
 namespace StudentLounge_Backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221213141341_RemoveColor_FromAgendaEvent")]
+    partial class RemoveColor_FromAgendaEvent
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -194,7 +196,7 @@ namespace StudentLounge_Backend.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("AgendaId")
+                    b.Property<int?>("AgendaId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("EndHour")
@@ -479,13 +481,9 @@ namespace StudentLounge_Backend.Migrations
 
             modelBuilder.Entity("StudentLounge_Backend.Models.Agendas.AgendaEvent", b =>
                 {
-                    b.HasOne("StudentLounge_Backend.Models.Agendas.Agenda", "Agenda")
+                    b.HasOne("StudentLounge_Backend.Models.Agendas.Agenda", null)
                         .WithMany("AgendaEvents")
-                        .HasForeignKey("AgendaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Agenda");
+                        .HasForeignKey("AgendaId");
                 });
 
             modelBuilder.Entity("StudentLounge_Backend.Models.Files.LessonFile", b =>

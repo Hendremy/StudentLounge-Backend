@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using StudentLounge_Backend.Models.Files;
 using StudentLounge_Backend.Models.Tutorats;
 using StudentLounge_Backend.Models.Lessons.Seed;
+using StudentLounge_Backend.Models.Agendas;
 
 namespace StudentLounge_Backend.Models
 {
@@ -33,6 +34,10 @@ namespace StudentLounge_Backend.Models
                 .WithMany(u => u.TutoringRequests)
                 .HasForeignKey(t => t.TutoredId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Agenda>().HasMany(a => a.AgendaEvents)
+                .WithOne(ae => ae.Agenda)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

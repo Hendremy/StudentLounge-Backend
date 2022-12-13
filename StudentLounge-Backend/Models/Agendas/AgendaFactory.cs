@@ -28,7 +28,7 @@ namespace StudentLounge_Backend.Models.Agendas
 
         private AgendaEvent AgendaEventFromCalendarEvent(CalendarEvent calEvent, string calendarName)
         {
-            return new AgendaEvent(calEvent.Uid, calEvent.Description, calendarName , calEvent.DtStart.Date, calEvent.DtEnd.Date);
+            return new AgendaEvent(calEvent.Uid, calEvent.Description, calendarName , calEvent.Start.AsUtc, calEvent.End.AsUtc);
         }
     }
 }

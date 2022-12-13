@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace StudentLounge_Backend.Models.Agendas
 {
@@ -6,9 +7,10 @@ namespace StudentLounge_Backend.Models.Agendas
     {
         [Key]
         public string Id { get; set; }
+        [JsonIgnore]
+        public Agenda Agenda { get; set; }
 
         public string Label { get; set; }
-        public string? Color { get; set; }
         public string GroupLabel { get; set; }
         public DateTime StartHour { get; set; }
         public DateTime EndHour { get; set; }
@@ -19,11 +21,10 @@ namespace StudentLounge_Backend.Models.Agendas
 
         }
 
-        public AgendaEvent(string uid, string label, string groupLabel, DateTime startHour, DateTime endHour, string? color = "")
+        public AgendaEvent(string uid, string label, string groupLabel, DateTime startHour, DateTime endHour)
         {
             Id = uid;
             Label = label;
-            Color = color;
             GroupLabel = groupLabel;
             StartHour = startHour;
             EndHour = endHour;

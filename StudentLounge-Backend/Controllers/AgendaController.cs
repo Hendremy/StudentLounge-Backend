@@ -40,11 +40,12 @@ namespace StudentLounge_Backend.Controllers
                         var calendars = _calendarParser.ParseFile(calendarFile);
                         //TODO: permettre d'écraser les agendas existants
                         user.Agendas = _createAgendas.FromCalendarCollection(calendars);
+                        _appDbContext.Update(user);
                         _appDbContext.SaveChanges();
                         return Ok(user.Agendas);
                     }
                 }
-                return BadRequest();
+                return BadRequest("Invalid file format");
             }
             catch (Exception ex)
             {
