@@ -10,8 +10,9 @@ namespace StudentLounge_Backend.Models.Agendas
         [JsonIgnore]
         public Agenda Agenda { get; set; }
 
-        public string Label { get; set; }
-        public string GroupLabel { get; set; }
+        public string Description { get; set; }
+        public string Location { get; set; }
+        public string Summary { get; set; }
         public DateTime StartHour { get; set; }
         public DateTime EndHour { get; set; }
         public DateTime Date => StartHour.Date;
@@ -21,11 +22,12 @@ namespace StudentLounge_Backend.Models.Agendas
 
         }
 
-        public AgendaEvent(string uid, string label, string groupLabel, DateTime startHour, DateTime endHour)
+        public AgendaEvent(string id, string description, string location, string summary, DateTime startHour, DateTime endHour)
         {
-            Id = uid;
-            Label = label;
-            GroupLabel = groupLabel;
+            Id = id;
+            Description = description;
+            Location = location;
+            Summary = summary;
             StartHour = startHour;
             EndHour = endHour;
         }

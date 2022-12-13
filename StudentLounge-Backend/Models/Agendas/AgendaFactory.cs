@@ -21,14 +21,20 @@ namespace StudentLounge_Backend.Models.Agendas
             var agendaEvents = new List<AgendaEvent>();
             foreach (var calendarEvent in calendar.Events)
             {
-                agendaEvents.Add(AgendaEventFromCalendarEvent(calendarEvent, calendar.Name));
+                agendaEvents.Add(AgendaEventFromCalendarEvent(calendarEvent));
             }
-            return new Agenda(agendaEvents);
+            return new Agenda(calendar.Name,agendaEvents);
         }
 
-        private AgendaEvent AgendaEventFromCalendarEvent(CalendarEvent calEvent, string calendarName)
+        private AgendaEvent AgendaEventFromCalendarEvent(CalendarEvent calEvent)
         {
-            return new AgendaEvent(calEvent.Uid, calEvent.Description, calendarName , calEvent.Start.AsUtc, calEvent.End.AsUtc);
+            return new AgendaEvent(
+                id: calEvent.Uid, 
+                description: calEvent.Description,
+                summary: calEvent.Summary,
+                location: calEvent.Location,
+                startHour: calEvent.Start.AsUtc, 
+                endHour: calEvent.End.AsUtc);
         }
     }
 }
