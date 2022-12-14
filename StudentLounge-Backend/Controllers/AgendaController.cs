@@ -38,7 +38,6 @@ namespace StudentLounge_Backend.Controllers
                     if(user != null)
                     {
                         var calendars = _calendarParser.ParseFile(calendarFile);
-                        //TODO: permettre d'écraser les agendas existants
                         user.Agendas = _createAgendas.FromCalendarCollection(calendars);
                         _appDbContext.Update(user);
                         _appDbContext.SaveChanges();
