@@ -6,9 +6,9 @@ namespace StudentLounge_Backend.Models.Agendas
     {
         public int Id { get; set; }
         [JsonIgnore]
-        public AppUser User { get; set; }
+        public virtual AppUser User { get; set; }
         public string Name { get; set; }
-        public IList<AgendaEvent> AgendaEvents { get; set; }
+        public virtual IList<AgendaEvent> AgendaEvents { get; set; }
 
         public Agenda()
         {

@@ -8,7 +8,7 @@ namespace StudentLounge_Backend.Models.Agendas
         [Key]
         public string Id { get; set; }
         [JsonIgnore]
-        public Agenda Agenda { get; set; }
+        public virtual Agenda Agenda { get; set; }
 
         public string Description { get; set; }
         public string Location { get; set; }

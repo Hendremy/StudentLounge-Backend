@@ -59,7 +59,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseSqlServer(config.GetConnectionString("default"));
     options.EnableSensitiveDataLogging();
-    //options.UseLazyLoadingProxies();
+    options.UseLazyLoadingProxies();
 });
 
 builder.Services.AddIdentity<AppUser, IdentityRole>()

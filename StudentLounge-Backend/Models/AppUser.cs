@@ -16,7 +16,7 @@ namespace StudentLounge_Backend.Models
 
         public string Fullname => $"{Firstname} {Lastname}";
 
-        public IList<Agenda> Agendas { get; set; } = new List<Agenda>();
+        public virtual IList<Agenda> Agendas { get; set; } = new List<Agenda>();
 
         [JsonIgnore]
         public virtual List<Lesson> Lessons { get; set; } = new List<Lesson>();

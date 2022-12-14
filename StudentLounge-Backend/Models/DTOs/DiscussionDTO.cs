@@ -5,18 +5,22 @@ namespace StudentLounge_Backend.Models.DTOs
     public class DiscussionDTO
     {
         public int Id { get; private set; }
-        public string Tutoredname { get; private set; }
-        public string? Tutoredimage { get; private set; }
-        public string? Tutorimage { get; private set; }
-        public string? Tutorname { get; private set; }
+        public string? Name { get; private set; }
+        public string? Image { get; private set; }
 
-        public DiscussionDTO(Tutoring tutoring)
+        public DiscussionDTO(Tutoring tutoring, string userId)
         {
-            Id = tutoring.Id;
-            Tutoredname = tutoring.Tutored.Fullname;
-            Tutoredimage = tutoring.Tutored.Image;
-            Tutorimage = tutoring.Tutor.Image;
-            Tutorname = tutoring.Tutor?.Fullname;
+            this.Id = tutoring.Id;
+            if(tutoring.Tutor?.Id == userId)
+            {
+                this.Name = tutoring.Tutored.Fullname;
+                this.Image = tutoring.Tutored.Image;
+            }
+            else
+            {
+                this.Name = tutoring.Tutor?.Fullname;
+                this.Image = tutoring.Tutor?.Image;
+            }
         }
     }
 }

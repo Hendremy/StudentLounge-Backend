@@ -108,7 +108,7 @@ namespace StudentLounge_Backend.Controllers
                     .Include(tutoring => tutoring.Tutored)
                     .Where(tutoring => tutoring.Tutor != null && (tutoring.Tutored.Id == userId
                                        || tutoring.Tutor.Id == userId))
-                    .Select(tutoring => new DiscussionDTO(tutoring));
+                    .Select(tutoring => new DiscussionDTO(tutoring, userId));
 
                 return Ok(tutorings);
             }
