@@ -18,6 +18,8 @@ namespace StudentLounge_Backend.Models
 
         public virtual IList<Agenda> Agendas { get; set; } = new List<Agenda>();
 
+        public virtual IList<Appointment> Appointments { get; set; } = new List<Appointment>();
+
         [JsonIgnore]
         public virtual List<Lesson> Lessons { get; set; } = new List<Lesson>();
 
