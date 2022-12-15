@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
 using System.Transactions;
 
 namespace StudentLounge_Backend.Models.Authentication
@@ -22,6 +24,21 @@ namespace StudentLounge_Backend.Models.Authentication
                 return await _userManager.AddToRoleAsync(user, "Student");
             }
             return createResult;
+        }
+
+        public async Task<IdentityResult> UpdateUser(AppUser user, string? password)
+        {
+            if (user != null)
+            {
+                if(password != null)
+                {
+                    user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, password);
+                }
+                return await _userManager.UpdateAsync(user);
+            }else
+            {
+                return null;
+            }
         }
 
         public async Task<bool> UserExistsAsync(string username)
