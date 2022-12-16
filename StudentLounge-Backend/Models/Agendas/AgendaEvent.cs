@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using StudentLounge_Backend.Models.Utils;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace StudentLounge_Backend.Models.Agendas
@@ -28,8 +29,8 @@ namespace StudentLounge_Backend.Models.Agendas
             Description = description;
             Location = location;
             Summary = summary;
-            StartHour = $"{startHour.ToUniversalTime():O}";
-            EndHour = $"{endHour.ToUniversalTime():O}";
+            StartHour = DateUtils.ToUtcString(startHour);
+            EndHour = DateUtils.ToUtcString(endHour);
         }
     }
 }

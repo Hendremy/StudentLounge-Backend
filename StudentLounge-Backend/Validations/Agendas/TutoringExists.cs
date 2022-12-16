@@ -1,5 +1,5 @@
 ﻿using StudentLounge_Backend.Models;
-using StudentLounge_Backend.Models.Agendas;
+using StudentLounge_Backend.Models.Appointments;
 using System.ComponentModel.DataAnnotations;
 
 namespace StudentLounge_Backend.Validations.Agendas

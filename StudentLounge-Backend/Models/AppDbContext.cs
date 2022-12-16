@@ -4,6 +4,7 @@ using StudentLounge_Backend.Models.Files;
 using StudentLounge_Backend.Models.Tutorats;
 using StudentLounge_Backend.Models.Lessons.Seed;
 using StudentLounge_Backend.Models.Agendas;
+using StudentLounge_Backend.Models.Appointments;
 
 namespace StudentLounge_Backend.Models
 {

@@ -1,4 +1,5 @@
 ﻿using StudentLounge_Backend.Models.Agendas;
+using StudentLounge_Backend.Models.Appointments;
 using StudentLounge_Backend.Models.Files;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;

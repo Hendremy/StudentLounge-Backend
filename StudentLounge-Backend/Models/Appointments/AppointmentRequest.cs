@@ -1,7 +1,7 @@
 ﻿using StudentLounge_Backend.Validations.Agendas;
 using System.ComponentModel.DataAnnotations;
 
-namespace StudentLounge_Backend.Models.Agendas
+namespace StudentLounge_Backend.Models.Appointments
 {
 
     [ValidAppointmentDates(ErrorMessage = "Invalid start and end dates.")]

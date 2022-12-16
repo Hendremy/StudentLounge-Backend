@@ -2,23 +2,25 @@
 using Microsoft.AspNetCore.Mvc;
 using StudentLounge_Backend.Models;
 using StudentLounge_Backend.Models.Agendas;
+using StudentLounge_Backend.Models.Appointments;
+using StudentLounge_Backend.Models.DTOs;
 
 namespace StudentLounge_Backend.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class AppointmentController : SecuredController
+    public class AppointmentsController : SecuredController
     {
 
         private readonly AppDbContext _appDbContext;
 
-        public AppointmentController([FromServices] AppDbContext appDbContext)
+        public AppointmentsController([FromServices] AppDbContext appDbContext)
         {
             _appDbContext = appDbContext;
         }
 
         [HttpPut]
-        public async Task<ActionResult> MakeAppointment(AppointmentRequest request)
+        public ActionResult<AppointmentDTO> MakeAppointment(AppointmentRequest request)
         {
             if (ModelState.IsValid)
             {
@@ -29,16 +31,16 @@ namespace StudentLounge_Backend.Controllers
                 _appDbContext.Appointments.Add(appointment);
                 tutoring.Appointments.Add(appointment);
                 _appDbContext.SaveChanges();
-                return Ok(appointment);
+                return Ok(new AppointmentDTO(appointment));
             }
             return ValidationProblem(ModelState);
         }
 
         [HttpGet]
-        public async Task<ActionResult> GetUserAppointments()
+        public ActionResult<IEnumerable<AppointmentDTO>> GetUserAppointments()
         {
             var user = _appDbContext.AppUsers.Find(GetUserId());
-            return Ok(user.Appointments);
+            return Ok(user.Appointments.Select(a => new AppointmentDTO(a)));
         }
     }
 }

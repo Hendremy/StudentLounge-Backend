@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using NuGet.Packaging;
 using StudentLounge_Backend.Models.Agendas;
+using StudentLounge_Backend.Models.Appointments;
 using StudentLounge_Backend.Models.Files;
 using StudentLounge_Backend.Models.Tutorats;
 using System.ComponentModel.DataAnnotations.Schema;
