@@ -19,6 +19,8 @@ namespace StudentLounge_Backend.Models
 
         public DbSet<AppUser> AppUsers { get; set; }
 
+        public DbSet<Appointment> Appointments { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
