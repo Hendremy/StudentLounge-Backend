@@ -17,7 +17,7 @@ namespace StudentLounge_Backend.Validations.Agendas
                     return new ValidationResult("Invited user does not exist.");
                 }
             }
-            return base.IsValid(value, validationContext);
+            return ValidationResult.Success;
         }
     }
 }

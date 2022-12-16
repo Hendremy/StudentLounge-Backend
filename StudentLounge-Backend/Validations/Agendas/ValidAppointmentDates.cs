@@ -17,7 +17,7 @@ namespace StudentLounge_Backend.Validations.Agendas
                     return false;
                 }
             }
-            return base.IsValid(value);
+            return true;
         }
     }
 }

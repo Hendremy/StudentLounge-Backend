@@ -31,10 +31,11 @@ namespace StudentLounge_Backend.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var user = _appDbContext.AppUsers.Find(GetUserId());
+                    var user = _appDbContext.AppUsers
+                        .Include(u => u.Agendas)
+                        .First(u => u.Id == GetUserId());
                     var calendars = _calendarParser.ParseFile(import.CalendarFile);
                     user.Agendas = _createAgendas.FromCalendarCollection(calendars);
-                    _appDbContext.Update(user);
                     _appDbContext.SaveChanges();
                     return Ok(user.Agendas);
                 }
@@ -49,15 +50,12 @@ namespace StudentLounge_Backend.Controllers
         [HttpGet]
         public async Task<ActionResult> GetUserAgendas()
         {
-            var user = _appDbContext.AppUsers
-                .Include(user => user.Agendas)
-                .ThenInclude(agendas => agendas.AgendaEvents)
-                .FirstOrDefault(u => u.Id == GetUserId());
+            var user = _appDbContext.AppUsers.Find(GetUserId());
             if(user != null)
             {
                 return Ok(user.Agendas);
             }
-            return BadRequest();
+            return NotFound("User not found.");
         }
     }
 }
