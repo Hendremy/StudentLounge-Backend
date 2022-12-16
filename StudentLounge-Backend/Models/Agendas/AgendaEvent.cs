@@ -13,9 +13,9 @@ namespace StudentLounge_Backend.Models.Agendas
         public string Description { get; set; }
         public string Location { get; set; }
         public string Summary { get; set; }
-        public DateTime StartHour { get; set; }
-        public DateTime EndHour { get; set; }
-        public DateTime Date => StartHour.Date;
+        public string StartHour { get; set; }
+        public string EndHour { get; set; }
+        public DateTime Date => DateTime.Parse(StartHour).Date;
 
         public AgendaEvent()
         {
@@ -28,8 +28,8 @@ namespace StudentLounge_Backend.Models.Agendas
             Description = description;
             Location = location;
             Summary = summary;
-            StartHour = startHour;
-            EndHour = endHour;
+            StartHour = $"{startHour.ToUniversalTime():O}";
+            EndHour = $"{endHour.ToUniversalTime():O}";
         }
     }
 }
