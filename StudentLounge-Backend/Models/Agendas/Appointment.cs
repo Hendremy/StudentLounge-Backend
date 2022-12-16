@@ -1,4 +1,6 @@
 ﻿using Ical.Net.CalendarComponents;
+using StudentLounge_Backend.Models.Tutorats;
+using System.Text.Json.Serialization;
 
 namespace StudentLounge_Backend.Models.Agendas
 {
@@ -7,7 +9,7 @@ namespace StudentLounge_Backend.Models.Agendas
     {
         public int Id { get; set; }
 
-        public virtual IList<AppUser> Users { get; set; }
+        public virtual Tutoring Tutoring { get; set; }
         public DateTime Start { get; set; }
         public DateTime End { get; set; }
         public string Location { get; set; }
@@ -17,12 +19,12 @@ namespace StudentLounge_Backend.Models.Agendas
 
         }
 
-        public Appointment(DateTime start, DateTime end, string location, params AppUser[] users)
+        public Appointment(DateTime start, DateTime end, string location, Tutoring tutoring)
         {
             Start = start;
             End = end;
             Location = location;
-            Users = new List<AppUser>(users);
+            Tutoring = tutoring;
         }
     }
 }

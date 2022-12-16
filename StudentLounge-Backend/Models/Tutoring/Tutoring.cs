@@ -1,4 +1,5 @@
-﻿using StudentLounge_Backend.Models.Files;
+﻿using StudentLounge_Backend.Models.Agendas;
+using StudentLounge_Backend.Models.Files;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
@@ -18,6 +19,9 @@ namespace StudentLounge_Backend.Models.Tutorats
         public virtual AppUser Tutored { get; set; }
 
         public virtual Lesson Lesson { get; set; }
+
+        [JsonIgnore]
+        public virtual IList<Appointment> Appointments { get; set; }
 
         public Tutoring() { }
 

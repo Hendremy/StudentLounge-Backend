@@ -73,7 +73,7 @@ namespace StudentLounge_Backend.Controllers
         }
 
         [HttpGet("lesson/{lessonId}")]
-        public async Task<ActionResult<IEnumerable<TutoringDTO>>> GetTutorats(string lessonId)
+        public async Task<ActionResult<IEnumerable<TutoringDTO>>> GetLessonTutoringsRequests(string lessonId)
         {
             try
             {
@@ -97,6 +97,16 @@ namespace StudentLounge_Backend.Controllers
             }
         }
 
+        [HttpGet]
+        public ActionResult<IEnumerable<ValidatedTutoringDTO>> GetUserValidatedTutorings()
+        {
+            var user = _context.AppUsers.Find(GetUserId());
+            return user.AllTutorings.Where(t => t.Tutor is not null)
+                .Select(tutoring => new ValidatedTutoringDTO(tutoring))
+                .ToList();
+        }
+
+        //TODO: Mettre cette fonction dans un controller Chat, Tutoring doit être indépendant du Chat
         [HttpGet("chat/")]
         public async Task<ActionResult<IEnumerable<DiscussionDTO>>> GetDiscussions()
         {

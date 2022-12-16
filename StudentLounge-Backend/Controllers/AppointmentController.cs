@@ -22,14 +22,12 @@ namespace StudentLounge_Backend.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = _appDbContext.AppUsers.Find(GetUserId());
-                var invitedUser = _appDbContext.AppUsers.Find(request.InvitedId);
+                var tutoring = _appDbContext.Tutorings.Find(request.TutoringId);
                 var start = DateTime.Parse(request.Start);
                 var end = DateTime.Parse(request.End);
-                var appointment = new Appointment(start, end, request.Location, user, invitedUser);
+                var appointment = new Appointment(start, end, request.Location, tutoring);
                 _appDbContext.Appointments.Add(appointment);
-                user.Appointments.Add(appointment);
-                invitedUser.Appointments.Add(appointment);
+                tutoring.Appointments.Add(appointment);
                 _appDbContext.SaveChanges();
                 return Ok(appointment);
             }
@@ -40,7 +38,7 @@ namespace StudentLounge_Backend.Controllers
         public async Task<ActionResult> GetUserAppointments()
         {
             var user = _appDbContext.AppUsers.Find(GetUserId());
-            return Ok();
+            return Ok(user.Appointments);
         }
     }
 }

@@ -1,8 +1,10 @@
 ﻿using Ical.Net;
 using Microsoft.AspNetCore.Identity;
+using NuGet.Packaging;
 using StudentLounge_Backend.Models.Agendas;
 using StudentLounge_Backend.Models.Files;
 using StudentLounge_Backend.Models.Tutorats;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 namespace StudentLounge_Backend.Models
@@ -18,8 +20,6 @@ namespace StudentLounge_Backend.Models
 
         public virtual IList<Agenda> Agendas { get; set; } = new List<Agenda>();
 
-        public virtual IList<Appointment> Appointments { get; set; } = new List<Appointment>();
-
         [JsonIgnore]
         public virtual List<Lesson> Lessons { get; set; } = new List<Lesson>();
 
@@ -31,5 +31,32 @@ namespace StudentLounge_Backend.Models
 
         [JsonIgnore]
         public virtual ICollection<Tutoring> TutoringRequests { get; set; } = new List<Tutoring>();
+
+        [NotMapped]
+        [JsonIgnore]
+        public virtual IList<Tutoring> AllTutorings
+        {
+            get
+            {
+                var tutorings = new List<Tutoring>(AcceptedTutorings);
+                tutorings.AddRange(TutoringRequests);
+                return tutorings;
+            }
+        }
+
+        [NotMapped]
+        [JsonIgnore]
+        public virtual IList<Appointment> Appointments
+        {
+            get
+            {
+                IList<Appointment> appointments = new List<Appointment>();
+                foreach(var tutoring in AllTutorings)
+                {
+                    appointments.AddRange(tutoring.Appointments);
+                }
+                return appointments;
+            }
+        }
     }
 }

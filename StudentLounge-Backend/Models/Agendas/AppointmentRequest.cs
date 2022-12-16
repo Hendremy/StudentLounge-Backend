@@ -5,11 +5,11 @@ namespace StudentLounge_Backend.Models.Agendas
 {
 
     [ValidAppointmentDates(ErrorMessage = "Invalid start and end dates.")]
-    [InvitedUserExists]
+    [TutoringExists]
     public class AppointmentRequest
     {
         [Required]
-        public string InvitedId { get; set; }
+        public string TutoringId { get; set; }
         [Required]
         public string Start { get; set; }
         [Required]
