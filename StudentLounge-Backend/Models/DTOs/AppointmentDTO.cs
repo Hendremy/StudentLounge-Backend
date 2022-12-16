@@ -6,8 +6,8 @@ namespace StudentLounge_Backend.Models.DTOs
     {
         public int Id { get; set; }
         public ValidatedTutoringDTO Tutoring { get; set; }
-        public string Start;
-        public string End;
+        public string Start { get; set; }
+        public string End { get; set; }
 
         public AppointmentDTO(Appointment appointment)
         {
