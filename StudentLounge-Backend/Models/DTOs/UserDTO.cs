@@ -10,6 +10,8 @@ namespace StudentLounge_Backend.Models.DTOs
         public string? Image { get; private set; }
         public string Password { get; private set; }
         public string Username { get; private set; }
+        public string Firstname { get; private set; }
+        public string Lastname { get; private set; }
 
         public UserDTO(AppUser user)
         {
@@ -18,6 +20,8 @@ namespace StudentLounge_Backend.Models.DTOs
             Image = user.Image;
             Password = user.PasswordHash;
             Username = user.UserName;
+            Firstname = user.Firstname;
+            Lastname = user.Lastname;
         }
     }
 }
