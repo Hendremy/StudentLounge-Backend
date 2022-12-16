@@ -29,22 +29,16 @@ namespace StudentLounge_Backend.Controllers
         {
             try
             {
-                var calendarFile = import.CalendarFile;
-                if (calendarFile.FileName.EndsWith(".ics"))
+                if (ModelState.IsValid)
                 {
-                    var user = _appDbContext.AppUsers
-                        .Include(user => user.Agendas)
-                        .FirstOrDefault(u => u.Id == GetUserId());
-                    if(user != null)
-                    {
-                        var calendars = _calendarParser.ParseFile(calendarFile);
-                        user.Agendas = _createAgendas.FromCalendarCollection(calendars);
-                        _appDbContext.Update(user);
-                        _appDbContext.SaveChanges();
-                        return Ok(user.Agendas);
-                    }
+                    var user = _appDbContext.AppUsers.Find(GetUserId());
+                    var calendars = _calendarParser.ParseFile(import.CalendarFile);
+                    user.Agendas = _createAgendas.FromCalendarCollection(calendars);
+                    _appDbContext.Update(user);
+                    _appDbContext.SaveChanges();
+                    return Ok(user.Agendas);
                 }
-                return BadRequest("Invalid file format");
+                return BadRequest(ModelState);
             }
             catch (Exception ex)
             {
