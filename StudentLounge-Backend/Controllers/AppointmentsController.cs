@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using StudentLounge_Backend.Models;
 using StudentLounge_Backend.Models.Agendas;
@@ -8,6 +9,7 @@ using StudentLounge_Backend.Models.DTOs;
 namespace StudentLounge_Backend.Controllers
 {
     [Route("[controller]")]
+    [Authorize(Roles="Student")]
     [ApiController]
     public class AppointmentsController : SecuredController
     {
@@ -19,7 +21,7 @@ namespace StudentLounge_Backend.Controllers
             _appDbContext = appDbContext;
         }
 
-        [HttpPut]
+        [HttpPost]
         public ActionResult<AppointmentDTO> MakeAppointment(AppointmentRequest request)
         {
             if (ModelState.IsValid)
