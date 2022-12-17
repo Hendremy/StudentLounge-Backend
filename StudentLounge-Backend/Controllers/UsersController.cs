@@ -5,6 +5,7 @@ using StudentLounge_Backend.Models;
 using StudentLounge_Backend.Models.Authentication;
 using StudentLounge_Backend.Models.DTOs;
 using StudentLounge_Backend.Models.Files;
+using StudentLounge_Backend.Models.UpdateUsers;
 
 namespace StudentLounge_Backend.Controllers
 {
@@ -30,25 +31,25 @@ namespace StudentLounge_Backend.Controllers
         }
 
         [HttpPost("update/{userId}")]
-        public async Task<ActionResult> UpdateUser(string userId, string? firstname, string? lastname, string? username, string? password)
+        public async Task<ActionResult> UpdateUser(string userId, [FromBody] UserUpdated userUpdated)
         {
             var user = _appDbContext.AppUsers.FirstOrDefault(user => user.Id == userId);
             if(user != null)
             {
-                if(username != null)
+                if(userUpdated.Username != null)
                 {
-                    user.UserName = username;
+                    user.UserName = userUpdated.Username;
                 }
-                if (firstname != null)
+                if (userUpdated.Firstname != null)
                 {
-                    user.Firstname = firstname;
+                    user.Firstname = userUpdated.Firstname;
                 }
-                if(lastname != null)
+                if(userUpdated.Lastname != null)
                 {
-                    user.Lastname= lastname;
+                    user.Lastname= userUpdated.Lastname;
                 }
 
-                await _userRepository.UpdateUser(user, password);
+                await _userRepository.UpdateUser(user, userUpdated.Password);
                 _appDbContext.SaveChanges();
                 return Ok();
             }
@@ -64,6 +65,8 @@ namespace StudentLounge_Backend.Controllers
             var user = _appDbContext.AppUsers.FirstOrDefault(user => user.Id == userId);
             if(user != null)
             {
+                var tutorings = _appDbContext.Tutorings.Where(tutoring => tutoring.TutorId == userId);
+                _appDbContext.Tutorings.RemoveRange(tutorings);
                 _appDbContext.AppUsers.Remove(user);
                 _appDbContext.SaveChanges();
                 return Ok();
