@@ -13,6 +13,7 @@ namespace StudentLounge_Backend.Models.DTOs
         public string Firstname { get; private set; }
         public string Lastname { get; private set; }
         public bool fromGoogle { get; private set; }
+        public bool isLockout { get; private set; }
 
         public UserDTO(AppUser user)
         {
@@ -23,6 +24,7 @@ namespace StudentLounge_Backend.Models.DTOs
             Firstname = user.Firstname;
             Lastname = user.Lastname;
             fromGoogle = user.PasswordHash.IsNullOrEmpty();
+            isLockout = DateTime.Now < user.LockoutEnd;
         }
     }
 }
