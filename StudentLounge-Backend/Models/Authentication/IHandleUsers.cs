@@ -11,5 +11,6 @@ namespace StudentLounge_Backend.Models.Authentication
         Task<AppUser> FindExternalUserAsync(string providerName, string userId);
         Task<IdentityResult> UpdateUser(AppUser user, string password);
         Task<IEnumerable<string>> GetUserRoles(AppUser user);
+        Task<bool> BlockUser(AppUser user);
     }
 }

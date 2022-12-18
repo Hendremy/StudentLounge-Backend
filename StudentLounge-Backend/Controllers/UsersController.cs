@@ -77,6 +77,22 @@ namespace StudentLounge_Backend.Controllers
             }
         }
 
+        [HttpPost("block/{userId}")]
+        public async Task<ActionResult> BlockUser(string userId)
+        {
+            var user = _appDbContext.AppUsers.FirstOrDefault(user => user.Id == userId);
+            if (user != null)
+            {
+                var result = await _userRepository.BlockUser(user);
+                _appDbContext.SaveChanges();
+                return Ok(result);
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
         private IEnumerable<UserDTO> ConvertUserToDTO(IEnumerable<AppUser> users)
         {
             IList<UserDTO> usersDTO = new List<UserDTO>();

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using System.Transactions;
+using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace StudentLounge_Backend.Models.Authentication
 {
@@ -53,7 +54,9 @@ namespace StudentLounge_Backend.Models.Authentication
             if(user != null)
             {
                 var loginResult = await _userManager.CheckPasswordAsync(user, password);
-                if (loginResult)
+                var lockout = await _userManager.IsLockedOutAsync(user);
+
+                if (loginResult && !lockout)
                 {
                     return user;
                 }
@@ -100,6 +103,13 @@ namespace StudentLounge_Backend.Models.Authentication
         public async Task<AppUser> FindExternalUserAsync(string providerName, string userId)
         {
             return await _userManager.FindByLoginAsync(providerName, userId);
+        }
+
+        public async Task<bool> BlockUser(AppUser user)
+        {
+            await _userManager.SetLockoutEnabledAsync(user, true);
+            await _userManager.SetLockoutEndDateAsync(user, DateTime.Today.AddYears(100));
+            return await _userManager.IsLockedOutAsync(user);
         }
     }
 }
