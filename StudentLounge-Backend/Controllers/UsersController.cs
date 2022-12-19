@@ -102,6 +102,5 @@ namespace StudentLounge_Backend.Controllers
             }
             return usersDTO;
         }
-
     }
 }
