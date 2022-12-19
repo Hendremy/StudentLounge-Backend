@@ -4,7 +4,7 @@
     {
         public static string ToUtcString(DateTime date)
         {
-            return $"{date.ToUniversalTime:O}";
+            return $"{date.ToUniversalTime():O}";
         }
     }
 }
