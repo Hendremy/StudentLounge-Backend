@@ -9,12 +9,15 @@ namespace StudentLounge_Backend.Models.DTOs
         public string Start { get; set; }
         public string End { get; set; }
 
+        public string Location { get; set; }
+
         public AppointmentDTO(Appointment appointment)
         {
             Id = appointment.Id;
             Start = appointment.Start;
             End = appointment.End;
             Tutoring = new ValidatedTutoringDTO(appointment.Tutoring);
+            Location = appointment.Location;
         }
     }
 }

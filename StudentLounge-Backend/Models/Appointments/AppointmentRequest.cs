@@ -9,7 +9,7 @@ namespace StudentLounge_Backend.Models.Appointments
     public class AppointmentRequest
     {
         [Required]
-        public string TutoringId { get; set; }
+        public int TutoringId { get; set; }
         [Required]
         public string Start { get; set; }
         [Required]
