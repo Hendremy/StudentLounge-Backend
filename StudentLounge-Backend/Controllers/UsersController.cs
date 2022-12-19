@@ -23,14 +23,14 @@ namespace StudentLounge_Backend.Controllers
             _userRepository = userRepository;
         }
 
-        [HttpGet("all")]
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<UserDTO>>> GetUsers()
         {
             var users = _appDbContext.AppUsers.ToList();
             return Ok(ConvertUserToDTO(users));
         }
 
-        [HttpPost("update/{userId}")]
+        [HttpPut("{userId}")]
         public async Task<ActionResult> UpdateUser(string userId, [FromBody] UserUpdated userUpdated)
         {
             var user = _appDbContext.AppUsers.FirstOrDefault(user => user.Id == userId);
@@ -59,7 +59,7 @@ namespace StudentLounge_Backend.Controllers
             }
         }
 
-        [HttpDelete("delete/{userId}")]
+        [HttpDelete("{userId}")]
         public async Task<ActionResult> DeleteUser(string userId)
         {
             var user = _appDbContext.AppUsers.FirstOrDefault(user => user.Id == userId);
@@ -77,7 +77,7 @@ namespace StudentLounge_Backend.Controllers
             }
         }
 
-        [HttpPost("block/{userId}")]
+        [HttpPost("{userId}")]
         public async Task<ActionResult> BlockUser(string userId)
         {
             var user = _appDbContext.AppUsers.FirstOrDefault(user => user.Id == userId);
