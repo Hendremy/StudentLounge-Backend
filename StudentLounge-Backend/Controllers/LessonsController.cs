@@ -11,17 +11,18 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using StudentLounge_Backend.Models;
+using StudentLounge_Backend.Models.DTOs;
 
 namespace StudentLounge_Backend.Controllers
 {
     [Route("[controller]")]
     [Authorize(Roles="Student")]
     [ApiController]
-    public class LessonController : SecuredController
+    public class LessonsController : SecuredController
     {
         private readonly AppDbContext _context;
 
-        public LessonController(AppDbContext context)
+        public LessonsController(AppDbContext context)
         {
             _context = context;
         }
@@ -33,60 +34,10 @@ namespace StudentLounge_Backend.Controllers
             return await _context.Lessons.ToListAsync();
         }
 
-        /*
-        // GET: api/Lessons/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Lesson>> GetLesson(int id)
-        {
-            var lesson = await _context.Lessons.FindAsync(id);
-
-            if (lesson == null)
-            {
-                return NotFound();
-            }
-
-            return lesson;
-        }
-        */
-        // PUT: api/Lessons/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        /*[HttpPut("{name}")]
-        public async Task<IActionResult> CreateLesson(string name)
-        {
-            if (string.IsNullOrEmpty(name))
-            {
-                return BadRequest();
-            }
-            var lesson = Activator.CreateInstance<Lesson>();
-            lesson.Name = name;
-            _context.Add(lesson);
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                return NotFound(name);
-            }
-            return NoContent();
-        }*/
-
-        // POST: api/Lessons
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        //[HttpPost]
-        //public async Task<ActionResult<Lesson>> PostLesson(Lesson lesson)
-        //{
-        //    _context.Lessons.Add(lesson);
-        //    await _context.SaveChangesAsync();
-        //
-        //    return CreatedAtAction("GetLesson", new { id = lesson.Id }, lesson);
-        //}
-
         [HttpGet]
         public ActionResult<IEnumerable<Lesson>> GetUserLessons()
         {
-            string userId = GetUserId();
+            /*string userId = GetUserId();
             if (UserIdIsValid(userId))
             {
                 var users = _context.AppUsers.Where(user => userId == user.Id).Include(u => u.Lessons);
@@ -94,7 +45,9 @@ namespace StudentLounge_Backend.Controllers
 
                 return Ok(myUser.Lessons);
             }
-            return Unauthorized();
+            return Unauthorized();*/
+            var user = _context.AppUsers.Find(GetUserId());
+            return Ok(user.Lessons.Select(l => new LessonDTO(l)));
         }
 
         [HttpPut("{lessonId}")]
@@ -134,25 +87,5 @@ namespace StudentLounge_Backend.Controllers
             return Unauthorized();
         }
 
-        // DELETE: api/Lessons/5
-        /*[HttpDelete("{lessonId}")]
-        public async Task<IActionResult> DeleteLesson(int lessonId)
-        {
-            var lesson = await _context.Lessons.FindAsync(lessonId);
-            if (lesson == null)
-            {
-                return NotFound();
-            }
-
-            _context.Lessons.Remove(lesson);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool LessonExists(int id)
-        {
-            return _context.Lessons.Any(e => e.Id == id);
-        }*/
     }
 }

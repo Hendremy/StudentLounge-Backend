@@ -11,11 +11,11 @@ namespace StudentLounge_Backend.Controllers
     [Route("[controller]")]
     [Authorize(Roles="Student")]
     [ApiController]
-    public class TutoringController : SecuredController
+    public class TutoringsController : SecuredController
     {
         private readonly AppDbContext _context;
 
-        public TutoringController(AppDbContext context)
+        public TutoringsController(AppDbContext context)
         {
             _context= context;
         }

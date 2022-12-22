@@ -17,13 +17,13 @@ namespace StudentLounge_Backend.Controllers
     [Route("[controller]")]
     [Authorize(Roles = "Student")]
     [ApiController]
-    public class LessonFileController : SecuredController
+    public class LessonFilesController : SecuredController
     {
         private const string LessonsDirectory = "Lessons";
         private readonly ITransferFiles _transferFiles;
         private readonly AppDbContext _appDbContext;
 
-        public LessonFileController([FromServices] ITransferFiles transferFiles, AppDbContext appDbContext)
+        public LessonFilesController([FromServices] ITransferFiles transferFiles, AppDbContext appDbContext)
         {
             _transferFiles = transferFiles;
             _appDbContext = appDbContext;
@@ -53,7 +53,7 @@ namespace StudentLounge_Backend.Controllers
             try
             {
                 var user = _appDbContext.AppUsers.Where(user => user.Id == userId).First();
-                var postedFile = new LessonFile(user, fileUpload.FileName, directoryPath, fileUpload.Type, lesson);
+                var postedFile = new LessonFile(user, fileUpload.FileName, directoryPath, fileUpload.ContentType, fileUpload.Type, lesson);
                 _appDbContext.LessonFiles.Add(postedFile);
                 user.PostedFiles.Add(postedFile);
                 lesson.Files.Add(postedFile);
@@ -76,7 +76,7 @@ namespace StudentLounge_Backend.Controllers
             {
                 var path = $"Lessons/{file.Lesson.Id}/{file.FileName}";
                 var stream = _transferFiles.GetDownloadStream(path);
-                return stream != null ? File(stream, "application/pdf", file.FileName) : StatusCode(500, "Download failed");
+                return stream != null ? File(stream, file.ContentType, file.FileName) : StatusCode(500, "Download failed");
             }
             return BadRequest("Invalid fileId");
         }

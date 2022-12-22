@@ -13,17 +13,19 @@ namespace StudentLounge_Backend.Models.Files
         public string FileName { get; set; }
         public DateTime AddedOn { get; set; }
         public string FilePath { get; set; }
+        public string ContentType { get; set; }
         public LessonFileType Type { get; set; }
         [JsonIgnore]
         public virtual Lesson Lesson { get; set; }
 
         public LessonFile() { }
 
-        public LessonFile(AppUser author, string name, string path, LessonFileType type, Lesson lesson)
+        public LessonFile(AppUser author, string name, string path, string contentType, LessonFileType type, Lesson lesson)
         {
             Author = author;
             FileName = name;
             FilePath = path;
+            ContentType = contentType;
             Type = type;
             AddedOn = DateTime.Now;
             Lesson = lesson;

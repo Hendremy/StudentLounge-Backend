@@ -11,14 +11,14 @@ namespace StudentLounge_Backend.Controllers
     [Route("[controller]")]
     [Authorize(Roles="Student")]
     [ApiController]
-    public class AgendaController : SecuredController
+    public class AgendasController : SecuredController
     {
         private readonly IParseCalendar _calendarParser;
         private readonly ICreateAgendas _createAgendas;
         private readonly AppDbContext _appDbContext;
-        private readonly ILogger<AgendaController> _logger;
+        private readonly ILogger<AgendasController> _logger;
 
-        public AgendaController(ILogger<AgendaController> logger, [FromServices] AppDbContext appDbContext, IParseCalendar calendarParser, ICreateAgendas createAgendas)
+        public AgendasController(ILogger<AgendasController> logger, [FromServices] AppDbContext appDbContext, IParseCalendar calendarParser, ICreateAgendas createAgendas)
         {
             _logger = logger;
             _calendarParser = calendarParser;
