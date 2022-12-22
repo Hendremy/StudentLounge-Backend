@@ -39,7 +39,6 @@ namespace StudentLounge_Backend.Controllers
                     _appDbContext.SaveChanges();
                     return Ok(user.Agendas);
                 }
-                return BadRequest(ModelState);
             }
             catch (Exception ex)
             {
