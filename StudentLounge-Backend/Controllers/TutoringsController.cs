@@ -20,7 +20,7 @@ namespace StudentLounge_Backend.Controllers
             _context= context;
         }
 
-        [HttpPut("lesson/{lessonId}")]
+        [HttpPost("lesson/{lessonId}")]
         public async Task<ActionResult<TutoringDTO>> AskTutorat(string lessonId)
         {
             string userId = GetUserId();
