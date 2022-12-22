@@ -105,27 +105,5 @@ namespace StudentLounge_Backend.Controllers
                 .Select(tutoring => new ValidatedTutoringDTO(tutoring))
                 .ToList();
         }
-
-        //TODO: Mettre cette fonction dans un controller Chat, Tutoring doit être indépendant du Chat
-        [HttpGet("chat/")]
-        public async Task<ActionResult<IEnumerable<DiscussionDTO>>> GetDiscussions()
-        {
-            try
-            {
-                string userId = GetUserId();
-                var tutorings = _context.Tutorings
-                    .Include(tutoring => tutoring.Tutor)
-                    .Include(tutoring => tutoring.Tutored)
-                    .Where(tutoring => tutoring.Tutor != null && (tutoring.Tutored.Id == userId
-                                       || tutoring.Tutor.Id == userId))
-                    .Select(tutoring => new DiscussionDTO(tutoring, userId));
-
-                return Ok(tutorings);
-            }
-            catch (InvalidOperationException ex)
-            {
-                return NotFound(ex);
-            }
-        }
     }
 }

@@ -37,17 +37,15 @@ namespace StudentLounge_Backend.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<Lesson>> GetUserLessons()
         {
-            /*string userId = GetUserId();
-            if (UserIdIsValid(userId))
+            var userId = GetUserId();
+            var user = _context.AppUsers.Find(userId);
+            var lessonDTOs = new List<LessonDTO>();
+            foreach(var lesson in user.Lessons)
             {
-                var users = _context.AppUsers.Where(user => userId == user.Id).Include(u => u.Lessons);
-                var myUser = users.First();
-
-                return Ok(myUser.Lessons);
+                var tutoring = _context.Tutorings.FirstOrDefault(t => t.Tutored.Id == userId && t.Lesson.Id == lesson.Id);
+                lessonDTOs.Add(new LessonDTO(lesson, tutoring));
             }
-            return Unauthorized();*/
-            var user = _context.AppUsers.Find(GetUserId());
-            return Ok(user.Lessons.Select(l => new LessonDTO(l)));
+            return Ok(lessonDTOs);
         }
 
         [HttpPut("{lessonId}")]
