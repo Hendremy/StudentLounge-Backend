@@ -22,6 +22,8 @@ namespace StudentLounge_Backend.Models
 
         public DbSet<Appointment> Appointments { get; set; }
 
+        public DbSet<Agenda> Agendas { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -40,6 +42,10 @@ namespace StudentLounge_Backend.Models
 
             modelBuilder.Entity<Agenda>().HasMany(a => a.AgendaEvents)
                 .WithOne(ae => ae.Agenda)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Agenda>().HasOne(a => a.User)
+                .WithMany(u => u.Agendas)
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }

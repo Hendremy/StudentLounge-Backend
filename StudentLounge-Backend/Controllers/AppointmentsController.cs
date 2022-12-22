@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using StudentLounge_Backend.Models;
 using StudentLounge_Backend.Models.Agendas;
 using StudentLounge_Backend.Models.Appointments;
@@ -41,7 +42,8 @@ namespace StudentLounge_Backend.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<AppointmentDTO>> GetUserAppointments()
         {
-            var user = _appDbContext.AppUsers.Find(GetUserId());
+            var user = _appDbContext.AppUsers
+                .Find(GetUserId());
             return Ok(user.Appointments.Select(a => new AppointmentDTO(a)));
         }
     }

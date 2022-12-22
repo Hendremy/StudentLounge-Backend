@@ -29,7 +29,7 @@ namespace StudentLounge_Backend.Models.Agendas
         private AgendaEvent AgendaEventFromCalendarEvent(CalendarEvent calEvent)
         {
             return new AgendaEvent(
-                id: calEvent.Uid, 
+                eventId: calEvent.Uid, 
                 description: calEvent.Description,
                 summary: calEvent.Summary,
                 location: calEvent.Location,

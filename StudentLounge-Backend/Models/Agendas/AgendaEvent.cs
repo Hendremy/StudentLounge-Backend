@@ -7,12 +7,13 @@ namespace StudentLounge_Backend.Models.Agendas
     public class AgendaEvent
     {
         [Key]
-        public string Id { get; set; }
+        public int Id { get; set; }
+        public string EventId { get; set; }
         [JsonIgnore]
         public virtual Agenda Agenda { get; set; }
 
         public string Description { get; set; }
-        public string Location { get; set; }
+        public string? Location { get; set; }
         public string Summary { get; set; }
         public string StartHour { get; set; }
         public string EndHour { get; set; }
@@ -23,12 +24,12 @@ namespace StudentLounge_Backend.Models.Agendas
 
         }
 
-        public AgendaEvent(string id, string description, string location, string summary, DateTime startHour, DateTime endHour)
+        public AgendaEvent(string eventId, string description, string location, string summary, DateTime startHour, DateTime endHour)
         {
-            Id = id;
-            Description = description;
-            Location = location;
-            Summary = summary;
+            EventId = eventId;
+            Description = description ?? "";
+            Location = location ?? "";
+            Summary = summary ?? "";
             StartHour = DateUtils.ToUtcString(startHour);
             EndHour = DateUtils.ToUtcString(endHour);
         }

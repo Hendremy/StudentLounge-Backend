@@ -16,41 +16,45 @@ namespace StudentLounge_Backend.Controllers
         private readonly IParseCalendar _calendarParser;
         private readonly ICreateAgendas _createAgendas;
         private readonly AppDbContext _appDbContext;
+        private readonly ILogger<AgendaController> _logger;
 
-        public AgendaController([FromServices] AppDbContext appDbContext, IParseCalendar calendarParser, ICreateAgendas createAgendas)
+        public AgendaController(ILogger<AgendaController> logger, [FromServices] AppDbContext appDbContext, IParseCalendar calendarParser, ICreateAgendas createAgendas)
         {
+            _logger = logger;
             _calendarParser = calendarParser;
             _appDbContext = appDbContext;
             _createAgendas = createAgendas;
         }
 
         [HttpPost]
-        public async Task<ActionResult> ImportCalendar([FromForm] AgendaImport import)
+        public ActionResult ImportCalendar([FromForm]AgendaImport import)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    var user = _appDbContext.AppUsers
-                        .Include(u => u.Agendas)
-                        .First(u => u.Id == GetUserId());
+                    var user = _appDbContext.AppUsers.Find(GetUserId());
                     var calendars = _calendarParser.ParseFile(import.CalendarFile);
-                    user.Agendas = _createAgendas.FromCalendarCollection(calendars);
+                    var agendas = _createAgendas.FromCalendarCollection(calendars);
+                    user.Agendas.Clear();
+                    user.Agendas = agendas;
                     _appDbContext.SaveChanges();
                     return Ok(user.Agendas);
                 }
+                return BadRequest(ModelState);
             }
             catch (Exception ex)
             {
-                return StatusCode(500);
+                _logger.LogError(ex.StackTrace);
+                return StatusCode(500, ex.StackTrace);
             }
         }
 
         [HttpGet]
-        public async Task<ActionResult> GetUserAgendas()
+        public ActionResult GetUserAgendas()
         {
             var user = _appDbContext.AppUsers.Find(GetUserId());
-            if(user != null)
+            if (user != null)
             {
                 return Ok(user.Agendas);
             }

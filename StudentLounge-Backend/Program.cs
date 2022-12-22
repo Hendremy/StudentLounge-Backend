@@ -19,6 +19,9 @@ var config = builder.Configuration;
 
 // Add services to the container.
 
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -124,7 +127,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: url,
                       policy =>
                       {
-                          policy.WithOrigins("https://porthos-intra.cg.helmo.be","http://localhost:3000").AllowAnyHeader().AllowAnyMethod();
+                          policy.WithOrigins("http://localhost:3000","https://dartagnan.cg.helmo.be","http://192.168.128.13").AllowAnyHeader().AllowAnyMethod();
                       });
 });
 
