@@ -95,6 +95,18 @@ namespace StudentLounge_Backend.Controllers
             }
         }
 
+        [HttpGet("lesson/{lessonId}/status")]
+        public ActionResult<TutoringRequestDTO> GetRequestStatus(string lessonId)
+        {
+            var user = _context.AppUsers.Find(GetUserId());
+            var tutoring = user.TutoringRequests.FirstOrDefault(t => t.Lesson.Id == lessonId);
+            if(user != null)
+            {
+                return Ok(tutoring == null ? null : new TutoringRequestDTO(tutoring));
+            }
+            return NotFound("User not found");
+        }
+
         [HttpGet]
         public ActionResult<IEnumerable<ValidatedTutoringDTO>> GetUserValidatedTutorings()
         {
