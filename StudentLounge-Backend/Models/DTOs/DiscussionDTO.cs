@@ -7,6 +7,7 @@ namespace StudentLounge_Backend.Models.DTOs
         public int Id { get; private set; }
         public string? Name { get; private set; }
         public string? Image { get; private set; }
+        public string Lesson { get; private set; }
 
         public DiscussionDTO(Tutoring tutoring, string userId)
         {
@@ -21,6 +22,7 @@ namespace StudentLounge_Backend.Models.DTOs
                 this.Name = tutoring.Tutor?.Fullname;
                 this.Image = tutoring.Tutor?.Image;
             }
+            this.Lesson = tutoring.Lesson.Name;
         }
     }
 }
