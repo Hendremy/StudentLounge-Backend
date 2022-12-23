@@ -6,7 +6,7 @@ namespace StudentLounge_Backend.Models.Authentication.Seed
     {
         public static void AddDefaultRoles(RoleManager<IdentityRole> roleManager)
         {
-            IdentityRole role = roleManager.FindByIdAsync("1").Result;
+            IdentityRole role =  roleManager.FindByIdAsync("1").Result;
             if (role == null)
             {
                 var add = roleManager.CreateAsync(new IdentityRole("Admin")).Result;    
