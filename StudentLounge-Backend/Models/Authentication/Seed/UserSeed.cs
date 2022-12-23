@@ -23,6 +23,7 @@ namespace StudentLounge_Backend.Models.Authentication.Seed
         private static void AddAdmin(UserManager<AppUser> userManager)
         {
             string email = "admin@studentlounge.com";
+            string root123SlashHash = "a9e8ca9a1eb3297b3d885a24ab07828d9d967c1c428821b1a7f8ccc072f361e1";
             AppUser user = userManager.FindByEmailAsync(email).Result;
             if (user == null)
             {
@@ -34,7 +35,7 @@ namespace StudentLounge_Backend.Models.Authentication.Seed
                     Lastname = "Admin"
                 };
 
-                var add = userManager.CreateAsync(admin, "Root123/").Result;
+                var add = userManager.CreateAsync(admin, root123SlashHash).Result;
 
                 if (add != null)
                 {
@@ -46,6 +47,7 @@ namespace StudentLounge_Backend.Models.Authentication.Seed
         private static void AddStudent(UserManager<AppUser> userManager)
         {
             string email = "student@studentlounge.com";
+            string root123SlashHash = "a9e8ca9a1eb3297b3d885a24ab07828d9d967c1c428821b1a7f8ccc072f361e1";
             AppUser user = userManager.FindByEmailAsync(email).Result;
             if (user == null)
             {
@@ -57,7 +59,7 @@ namespace StudentLounge_Backend.Models.Authentication.Seed
                     Lastname = "Student"
                 };
 
-                var add = userManager.CreateAsync(test, "Root123/").Result;
+                var add = userManager.CreateAsync(test, root123SlashHash).Result;
 
                 if (add != null)
                 {
