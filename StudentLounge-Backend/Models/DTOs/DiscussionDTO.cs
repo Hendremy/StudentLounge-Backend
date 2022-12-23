@@ -22,7 +22,6 @@ namespace StudentLounge_Backend.Models.DTOs
                 this.Name = tutoring.Tutor?.Fullname;
                 this.Image = tutoring.Tutor?.Image;
             }
-            this.Lesson = tutoring.Lesson.Name;
         }
     }
 }

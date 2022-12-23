@@ -25,11 +25,10 @@ namespace StudentLounge_Backend.Controllers
             {
                 string userId = GetUserId();
                 var tutorings = _context.Tutorings
-                    .Include(tutoring => tutoring.Tutor)
-                    .Include(tutoring => tutoring.Tutored)
                     .Where(tutoring => tutoring.Tutor != null && (tutoring.Tutored.Id == userId
                                        || tutoring.Tutor.Id == userId))
-                    .Select(tutoring => new DiscussionDTO(tutoring, userId));
+                    .Select(tutoring => new DiscussionDTO(tutoring, userId))
+                    .ToList();
 
                 return Ok(tutorings);
             }
