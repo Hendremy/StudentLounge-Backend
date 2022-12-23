@@ -70,7 +70,7 @@ namespace StudentLounge_Backend.Controllers
             return Unauthorized();
         }
 
-        [HttpGet("lesson/{lessonId}")]
+        [HttpGet("lesson/{lessonId}/all")]
         public ActionResult<IEnumerable<TutoringDTO>> GetLessonTutoringsRequests(string lessonId)
         {
             try
@@ -95,7 +95,7 @@ namespace StudentLounge_Backend.Controllers
             }
         }
 
-        [HttpGet("lesson/{lessonId}/status")]
+        [HttpGet("lesson/{lessonId}")]
         public ActionResult<TutoringRequestDTO> GetRequestStatus(string lessonId)
         {
             var user = _context.AppUsers.Find(GetUserId());
