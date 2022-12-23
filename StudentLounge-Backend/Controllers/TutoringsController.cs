@@ -71,7 +71,7 @@ namespace StudentLounge_Backend.Controllers
         }
 
         [HttpGet("lesson/{lessonId}")]
-        public async Task<ActionResult<IEnumerable<TutoringDTO>>> GetLessonTutoringsRequests(string lessonId)
+        public ActionResult<IEnumerable<TutoringDTO>> GetLessonTutoringsRequests(string lessonId)
         {
             try
             {
@@ -82,7 +82,7 @@ namespace StudentLounge_Backend.Controllers
                 var tutorings = _context.Tutorings
                     .Include(tutoring => tutoring.Tutor)
                     .Include(tutoring => tutoring.Tutored)
-                    .Where(tutoring => tutoring.Lesson == lesson 
+                    .Where(tutoring => tutoring.Lesson == lesson
                                        && tutoring.Tutored.Id != userId
                                        && tutoring.Tutor == null)
                     .Select(tutoring => new TutoringDTO(tutoring));

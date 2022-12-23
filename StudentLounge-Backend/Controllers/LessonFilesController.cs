@@ -32,7 +32,6 @@ namespace StudentLounge_Backend.Controllers
         [HttpPost]
         public async Task<IActionResult> Upload([FromForm] FileUpload fileUpload)
         {
-            //Il y a moyen de récupérer le fichier par Request.Form.Files
             var userId = GetUserId();
             var lesson = _appDbContext.Lessons.Include(lesson => lesson.Files).FirstOrDefault(lesson => lesson.Id == fileUpload.LessonId);
             if (lesson != null)
@@ -67,7 +66,7 @@ namespace StudentLounge_Backend.Controllers
         }
 
         [HttpGet("{fileId}")]
-        public async Task<IActionResult> Download(string fileId)
+        public IActionResult Download(string fileId)
         {
             var file = _appDbContext.LessonFiles
                 .Include(file => file.Lesson)
@@ -81,15 +80,15 @@ namespace StudentLounge_Backend.Controllers
             return BadRequest("Invalid fileId");
         }
 
-        
+
         [HttpGet("lesson/{lessonId}")]
-        public async Task<ActionResult<IEnumerable<LessonFileDTO>>> GetLessonFiles(string lessonId)
+        public ActionResult<IEnumerable<LessonFileDTO>> GetLessonFiles(string lessonId)
         {
             var lesson = _appDbContext.Lessons
                 .Include(lesson => lesson.Files)
                 .ThenInclude(file => file.Author)
                 .FirstOrDefault(lesson => lesson.Id == lessonId);
-            if(lesson != null)
+            if (lesson != null)
             {
                 var files = lesson.Files.ToList();
                 var filesDTO = ConvertFilesToDTO(files);

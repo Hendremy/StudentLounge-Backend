@@ -19,7 +19,7 @@ namespace StudentLounge_Backend.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<DiscussionDTO>>> GetDiscussions()
+        public ActionResult<IEnumerable<DiscussionDTO>> GetDiscussions()
         {
             try
             {

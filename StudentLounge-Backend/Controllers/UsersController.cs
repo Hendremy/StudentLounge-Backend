@@ -24,7 +24,7 @@ namespace StudentLounge_Backend.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<UserDTO>>> GetUsers()
+        public ActionResult<IEnumerable<UserDTO>> GetUsers()
         {
             var users = _appDbContext.AppUsers.ToList();
             return Ok(ConvertUserToDTO(users));
@@ -60,10 +60,10 @@ namespace StudentLounge_Backend.Controllers
         }
 
         [HttpDelete("{userId}")]
-        public async Task<ActionResult> DeleteUser(string userId)
+        public ActionResult DeleteUser(string userId)
         {
             var user = _appDbContext.AppUsers.FirstOrDefault(user => user.Id == userId);
-            if(user != null)
+            if (user != null)
             {
                 var tutorings = _appDbContext.Tutorings.Where(tutoring => tutoring.TutorId == userId);
                 _appDbContext.Tutorings.RemoveRange(tutorings);
