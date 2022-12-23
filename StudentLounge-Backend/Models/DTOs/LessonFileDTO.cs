@@ -7,6 +7,7 @@ namespace StudentLounge_Backend.Models.DTOs
         public string Id { get; private set; }
         public string Name { get; private set; }
         public string User { get; private set; }
+        public string ContentType { get; private set; }
         public DateTime Date { get; private set; }
         public LessonFileType Type { get; private set; }
 
@@ -17,6 +18,7 @@ namespace StudentLounge_Backend.Models.DTOs
             User = lessonFile.Author.Fullname;
             Date = lessonFile.AddedOn;
             Type = lessonFile.Type;
+            ContentType = lessonFile.ContentType;
         }
     }
 }
