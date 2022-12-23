@@ -23,28 +23,26 @@ namespace StudentLounge_Backend.Controllers
         [HttpPost("lesson/{lessonId}")]
         public async Task<ActionResult<TutoringDTO>> AskTutorat(string lessonId)
         {
-            string userId = GetUserId();
-            if (UserIdIsValid(userId))
+            try
             {
-                try
+                var userId = GetUserId();
+                var lesson = _context.Lessons.Find(lessonId);
+                var user = _context.AppUsers.Find(userId);
+                if (user is null || lesson is null) throw new InvalidOperationException();
+                var existingTutorat = lesson.Tutorats.FirstOrDefault(t => t.Tutored.Id == userId);
+                if(existingTutorat is null)
                 {
-                    var lesson = _context.Lessons.Where(lesson => lesson.Id == lessonId).First();
-                    var user = _context.AppUsers.Where(user => user.Id == userId).First();
-                    var tutorat = new Tutoring() {Lesson = lesson, Date = DateTime.Now, Tutored = user, TutoredId = userId};
-
-                    //_context.Tutorats.Add(tutorat);
-                    //lesson.Tutorats.Add(tutorat);
+                    var tutorat = new Tutoring() { Lesson = lesson, Date = DateTime.Now, Tutored = user, TutoredId = userId };
                     user.TutoringRequests.Add(tutorat);
-
                     await _context.SaveChangesAsync();
                     return Ok(new TutoringDTO(tutorat));
                 }
-                catch (InvalidOperationException ex)
-                {
-                    return NotFound(ex);
-                }
+                return BadRequest("Tutoring already asked");
             }
-            return Unauthorized();
+            catch (InvalidOperationException ex)
+            {
+                return NotFound(ex);
+            }
         }
 
         [HttpPut("{tutoratId}")]
